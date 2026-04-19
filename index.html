@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TwoType — Desenvolvimento de Software de Alto Nível</title>
+    <!-- Modern Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Outfit:wght@800&display=swap"
+        rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <canvas id="bg-particles"></canvas>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-logo logo-shimmer" onclick="showSection('home')">
+            <div class="logo-icon">2</div>
+            <span class="logo-text">Type</span>
+        </div>
+        <div class="nav-links">
+            <a onclick="showSection('home')">Início</a>
+            <a onclick="showSection('services')">Serviços</a>
+            <a onclick="showSection('about')">Quem Somos</a>
+            <a onclick="showSection('request')">Solicitar</a>
+            <a onclick="showSection('portal')">Área do Cliente</a>
+        </div>
+        <div class="nav-right">
+            <button class="btn-ghost" onclick="showSection('admin')">Painel Admin</button>
+            <button class="btn-primary" onclick="showSection('request')">Começar projeto →</button>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════ HOME ═══════════════════════════════ -->
+    <div id="home" class="section active">
+        <!-- Animated Hero Background -->
+        <div class="hero-grid"></div>
+        <div class="hero-orb"></div>
+
+        <div class="hero-content">
+            <div class="hero-badge animate-hidden"><span></span>Desenvolvimento sob medida</div>
+            <h1 class="hero-title animate-hidden delay-1">Tecnologia que<br><em>transforma</em> negócios</h1>
+            <p class="hero-sub animate-hidden delay-2">
+                Da ideia ao produto final — desenvolvemos sistemas, apps e soluções digitais com excelência técnica e
+                design de alto nível.
+            </p>
+            <div class="hero-actions animate-hidden delay-3">
+                <button class="btn-hero" onclick="showSection('request')">Solicitar projeto</button>
+                <button class="btn-hero-outline" onclick="showSection('services')">Ver serviços</button>
+            </div>
+        </div>
+
+        <div class="hero-stats animate-hidden delay-4">
+            <div class="hero-stat">
+                <div class="hero-stat-num roulette" data-target="50" data-suffix="+"><span>0</span></div>
+                <div class="hero-stat-label">Projetos entregues</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-num roulette" data-target="98" data-suffix="%"><span>0</span></div>
+                <div class="hero-stat-label">Satisfação</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-num roulette" data-target="3" data-suffix="x"><span>0</span></div>
+                <div class="hero-stat-label">Mais rápido</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-num roulette" data-target="24" data-suffix="h"><span>0</span></div>
+                <div class="hero-stat-label">Suporte</div>
+            </div>
+        </div>
+
+        <div class="features-strip">
+            <div class="feature-card animate-hidden">
+                <div class="feature-icon"><i data-lucide="zap"></i></div>
+                <h3>Entrega ágil</h3>
+                <p>Metodologias modernas de desenvolvimento com entregas incrementais e ciclos curtos de feedback.</p>
+            </div>
+            <div class="feature-card animate-hidden delay-1">
+                <div class="feature-icon"><i data-lucide="lock"></i></div>
+                <h3>Segurança máxima</h3>
+                <p>Código auditado, autenticação robusta e boas práticas de segurança em todos os projetos.</p>
+            </div>
+            <div class="feature-card animate-hidden delay-2">
+                <div class="feature-icon"><i data-lucide="layout"></i></div>
+                <h3>Design UI/UX Premium</h3>
+                <p>Interfaces intuitivas e elegantes, projetadas para converter e encantar os usuários finais.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════ SERVICES ═══════════════════════════════ -->
+    <div id="services" class="section">
+        <div style="padding: 100px 40px 80px; min-height: 100vh;">
+            <div class="section-header animate-hidden">
+                <div class="section-eyebrow">Expertise</div>
+                <h2 class="section-title">Soluções completas<br>para o seu negócio</h2>
+                <p class="section-sub">Ajudamos empresas a escalar com engenharia de software de ponta, do MVP ao
+                    produto Enterprise.</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card animate-hidden">
+                    <div class="service-icon"><i data-lucide="globe"></i></div>
+                    <h3>Sistemas Web & Plataformas</h3>
+                    <p>Aplicações robustas, rápidas e escaláveis, utilizando as tecnologias mais avançadas do mercado
+                        como React, Next.js e Node.</p>
+                    <div class="service-tags">
+                        <span class="tag">React</span><span class="tag">Next.js</span><span
+                            class="tag">Node.js</span><span class="tag">PostgreSQL</span>
+                    </div>
+                </div>
+                <div class="service-card animate-hidden delay-1">
+                    <div class="service-icon"><i data-lucide="smartphone"></i></div>
+                    <h3>Aplicativos Mobile</h3>
+                    <p>Apps nativos e híbridos para iOS e Android. Oferecemos experiências nativas imersivas com alta
+                        performance e design fluido.</p>
+                    <div class="service-tags">
+                        <span class="tag">React Native</span><span class="tag">Flutter</span><span
+                            class="tag">iOS</span><span class="tag">Android</span>
+                    </div>
+                </div>
+                <div class="service-card animate-hidden delay-2">
+                    <div class="service-icon"><i data-lucide="waypoints"></i></div>
+                    <h3>Integrações e APIs</h3>
+                    <p>Conectamos seu ecossistema: desenvolvemos APIs REST e GraphQL de alta performance e integramos
+                        sistemas legados, ERPs e CRMs.</p>
+                    <div class="service-tags">
+                        <span class="tag">REST</span><span class="tag">GraphQL</span><span
+                            class="tag">Webhooks</span><span class="tag">OAuth</span>
+                    </div>
+                </div>
+                <div class="service-card animate-hidden delay-3">
+                    <div class="service-icon"><i data-lucide="bot"></i></div>
+                    <h3>Automações & IA</h3>
+                    <p>Impulsione operações com Inteligência Artificial, LLMs, Chatbots integrados e automações
+                        profundas de processos complexos.</p>
+                    <div class="service-tags">
+                        <span class="tag">Python</span><span class="tag">LLMs (OpenAI)</span><span
+                            class="tag">n8n</span><span class="tag">Machine Learning</span>
+                    </div>
+                </div>
+                <div class="service-card animate-hidden delay-4">
+                    <div class="service-icon"><i data-lucide="cloud"></i></div>
+                    <h3>Arquitetura Cloud</h3>
+                    <p>Migração e estruturação em Nuvem. Deploy automatizado (CI/CD), containers, alta disponibilidade e
+                        monitoramento 24/7.</p>
+                    <div class="service-tags">
+                        <span class="tag">AWS</span><span class="tag">Docker</span><span
+                            class="tag">Kubernetes</span><span class="tag">Vercel</span>
+                    </div>
+                </div>
+                <div class="service-card animate-hidden delay-5">
+                    <div class="service-icon"><i data-lucide="layout-dashboard"></i></div>
+                    <h3>ERPs Customizados</h3>
+                    <p>Crie um sistema de gestão desenhado perfeitamente para as suas regras de negócio. Gestão
+                        financeira, estoque, RH e Dashboards.</p>
+                    <div class="service-tags">
+                        <span class="tag">ERP</span><span class="tag">CRM</span><span class="tag">Dashboards
+                            B2B</span><span class="tag">BI</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="process-section animate-hidden">
+                <p class="process-title">Nosso fluxo de trabalho</p>
+                <div class="process-steps">
+                    <div class="process-step">
+                        <div class="step-num">01</div>
+                        <h4>Diagnóstico</h4>
+                        <p>Imersão no seu negócio para identificar gargalos e escopo.</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-num">02</div>
+                        <h4>Prototipagem</h4>
+                        <p>Design de UX/UI criando fluxos e interfaces interativas.</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-num">03</div>
+                        <h4>Desenvolvimento</h4>
+                        <p>Sprints ágeis com demonstrações semanais de progresso.</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-num">04</div>
+                        <h4>Entrega</h4>
+                        <p>Auditoria, deploy em produção e documentação completa.</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-num">05</div>
+                        <h4>Evolução</h4>
+                        <p>Manutenção preditiva, suporte técnico e novas features.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center animate-hidden mt-16" style="margin-top: 80px;">
+                <p style="color:var(--text2); margin-bottom: 24px; font-size: 16px;">Transforme sua operação com
+                    tecnologia de ponta</p>
+                <button class="btn-hero" onclick="showSection('request')">Falar com um especialista →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════ QUEM SOMOS ═══════════════════════════════ -->
+    <div id="about" class="section">
+        <div style="padding: 100px 40px 80px; min-height: 100vh;">
+            <div class="section-header animate-hidden">
+                <div class="section-eyebrow">Sobre a TwoType</div>
+                <h2 class="section-title">Quem Somos</h2>
+                <p class="section-sub">A união da engenharia de precisão com o desenvolvimento de software de alta
+                    performance.</p>
+            </div>
+
+            <div class="about-intro animate-hidden delay-1"
+                style="max-width: 900px; margin: 0 auto 80px; text-align: center;">
+                <p style="font-size: 18px; color: var(--text2); line-height: 1.8;">
+                    Nós transformamos desafios complexos em soluções tecnológicas robustas, escaláveis e sob medida.
+                    Mais do que escrever linhas de código, nós projetamos ecossistemas digitais completos — unindo o
+                    rigor analítico da engenharia à vanguarda do desenvolvimento de sistemas para impulsionar os
+                    resultados do seu negócio.
+                </p>
+            </div>
+
+            <div class="section-header animate-hidden delay-2" style="margin-bottom: 50px;">
+                <h3 style="font-size: 32px; color: #fff;">Nossos Especialistas</h3>
+            </div>
+
+            <div class="services-grid animate-hidden delay-3">
+                <!-- Marcos Vinicius -->
+                <div class="service-card member-card">
+                    <div class="member-photo-wrap">
+                    <img src="assets/img/marcos.jpg" alt="Marcos Vinicius" class="member-photo">
+                </div>
+                    <h3>Marcos Vinicius</h3>
+                    <p class="member-role">Arquitetura de Sistemas & Engenharia</p>
+                    <div class="member-bio">
+                        Aos 41 anos e natural de Volta Redonda, Marcos Vinicius traz uma base técnica sólida e pragmática para a equipe. Formado em Engenharia de Software e Engenharia Elétrica, com especialização em Instrumentação e Controle, ele atua na integração entre sistemas, automação e arquitetura de software. Sua multidisciplinaridade garante que a base de cada projeto seja construída com estabilidade, segurança e a lógica técnica necessária para atender às demandas reais do mercado.
+                    </div>
+                </div>
+
+                <!-- Filipe de Andrade -->
+                <div class="service-card member-card">
+                    <div class="member-photo-wrap">
+                    <img src="assets/img/filipe.jpg" alt="Filipe de Andrade" class="member-photo">
+                </div>
+                    <h3>Filipe de Andrade</h3>
+                    <p class="member-role">Inovação Digital & Desenvolvimento Corporativo</p>
+                    <div class="member-bio">
+                        Aos 24 anos e natural de Volta Redonda, Filipe de Andrade é o motor da inovação e da construção
+                        de interfaces inteligentes. Formado em Análise e Desenvolvimento de Sistemas (ADS), possui uma
+                        atuação cirúrgica no desenvolvimento de ecossistemas para empresas. Especialista em conectar
+                        experiências de usuário intuitivas com arquiteturas back-end robustas para escalabilidade e
+                        otimização de processos.
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-differential animate-hidden delay-4"
+                style="max-width: 900px; margin: 100px auto 0; padding: 48px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); text-align: center;">
+                <h3 style="font-size: 24px; color: #fff; margin-bottom: 20px;">O Nosso Diferencial</h3>
+                <p style="font-size: 16px; color: var(--text2); line-height: 1.8; margin-bottom: 24px;">
+                    Nossa parceria nasce da sinergia entre gerações e disciplinas. Enquanto a engenharia garante
+                    fundações sólidas e lógicas impecáveis para o processamento de dados e automação, o desenvolvimento
+                    web moderno e focado no meio corporativo garante que essas ferramentas sejam acessíveis, rápidas e
+                    gerem valor imediato.
+                </p>
+                <p style="font-size: 16px; color: #fff; font-weight: 500;">
+                    Seja na criação de um portal empresarial, na construção de um dashboard gerencial ou no
+                    desenvolvimento de um sistema complexo do zero, nós entregamos tecnologia que resolve problemas
+                    reais.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════ REQUEST ═══════════════════════════════ -->
+    <div id="request" class="section">
+        <div class="request-wrap">
+            <div class="section-header animate-hidden" style="margin-top: 40px;">
+                <div class="section-eyebrow">Solicitar proposta</div>
+                <h2 class="section-title">Inicie sua jornada<br>digital</h2>
+                <p class="section-sub">Conte-nos sobre o seu desafio. Nossa equipe enviará uma análise de viabilidade e
+                    orçamento preliminar em até 24h.</p>
+            </div>
+
+            <div class="request-form animate-hidden" id="requestForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nome completo</label>
+                        <input type="text" id="req_name" placeholder="Como deseja ser chamado?">
+                    </div>
+                    <div class="form-group">
+                        <label>Empresa (opcional)</label>
+                        <input type="text" placeholder="Nome da sua empresa">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>E-mail corporativo</label>
+                        <input type="email" id="req_email" placeholder="seu.nome@empresa.com">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp / Telefone</label>
+                        <input type="tel" placeholder="(11) 99999-9999">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Do que você precisa?</label>
+                    <div class="service-options">
+                        <div class="svc-option" onclick="selectOption(this)">
+                            <div class="svc-option-title">🌐 Web & Plataforma</div>
+                            <div class="svc-option-sub">Landing page, sistema, SaaS</div>
+                        </div>
+                        <div class="svc-option" onclick="selectOption(this)">
+                            <div class="svc-option-title">📱 Aplicativo Mobile</div>
+                            <div class="svc-option-sub">App iOS, Android, Híbrido</div>
+                        </div>
+                        <div class="svc-option" onclick="selectOption(this)">
+                            <div class="svc-option-title">🤖 Automações / IA</div>
+                            <div class="svc-option-sub">Chatbots, IA generativa, fluxos</div>
+                        </div>
+                        <div class="svc-option" onclick="selectOption(this)">
+                            <div class="svc-option-title">📊 ERP / Gestão</div>
+                            <div class="svc-option-sub">Sistema interno corporativo</div>
+                        </div>
+                        <div class="svc-option" onclick="selectOption(this)">
+                            <div class="svc-option-title">🔌 API / Integração</div>
+                            <div class="svc-option-sub">Conectar múltiplos serviços</div>
+                        </div>
+                        <div class="svc-option" onclick="selectOption(this)">
+                            <div class="svc-option-title">💡 Consultoria / Outro</div>
+                            <div class="svc-option-sub">Arquitetura, UX, cloud...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row" style="margin-top: 16px;">
+                    <div class="form-group">
+                        <label>Prazo estimado</label>
+                        <select>
+                            <option value="">Selecione...</option>
+                            <option>Urgente (menos de 1 mês)</option>
+                            <option>Curto prazo (1 a 3 meses)</option>
+                            <option>Médio prazo (3 a 6 meses)</option>
+                            <option>Planejamento (sem pressa)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Orçamento aproximado</label>
+                        <select>
+                            <option value="">Faixa de investimento...</option>
+                            <option>Até R$ 5.000</option>
+                            <option>R$ 5.000 – R$ 15.000</option>
+                            <option>R$ 15.000 – R$ 50.000</option>
+                            <option>R$ 50.000 – R$ 100.000</option>
+                            <option>Acima de R$ 100.000</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Detalhes do Projeto</label>
+                    <textarea
+                        placeholder="Descreva o problema que deseja resolver, funcionalidades esperadas, ou apenas nos dê o contexto..."></textarea>
+                </div>
+                <button class="btn-full" onclick="submitRequest()">Enviar solicitação →</button>
+            </div>
+
+            <div class="form-success animate-hidden" id="formSuccess">
+                <div class="success-icon">✓</div>
+                <h3>Solicitação enviada com sucesso!</h3>
+                <p>Obrigado pelo interesse, <span id="successName"></span>. Nossa equipe de engenheiros parceiros
+                    enviará os próximos passos para <span id="successEmail"></span> muito em breve.</p>
+                <button class="btn-hero" style="margin-top: 32px;" onclick="showSection('home')">Retornar à página
+                    inicial</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════ PORTAL ═══════════════════════════════ -->
+    <div id="portal" class="section">
+        <div class="portal-wrap">
+            <div class="section-header animate-hidden" style="margin-top: 40px;">
+                <div class="section-eyebrow">Área Restrita</div>
+                <h2 class="section-title">Portal do Cliente</h2>
+                <p class="section-sub">Acesso total e transparente: acompanhe timelines, faturas e comunique-se com a
+                    nossa equipe do projeto.</p>
+            </div>
+
+            <div class="portal-layout">
+                <!-- LOGIN -->
+                <div id="portalLogin" class="animate-hidden">
+                    <div class="portal-login">
+                        <h3>Acesso ao Portal</h3>
+                        <p>Faça login com sua conta TwoType</p>
+                        <div class="form-group">
+                            <label>E-mail</label>
+                            <input type="email" id="loginEmail" placeholder="seu@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Senha</label>
+                            <input type="password" id="loginPass" placeholder="••••••••">
+                        </div>
+                        <button class="btn-full" onclick="doLogin()">Entrar</button>
+                        <button class="btn-full secondary" onclick="showSection('request')">Ainda não sou cliente
+                            →</button>
+                        <div class="portal-divider">Acesso demo: cliente@twotype.com / demo123</div>
+                    </div>
+                </div>
+
+                <!-- CLIENT DASHBOARD -->
+                <div class="client-dashboard" id="clientDash">
+                    <div class="dash-welcome fade-in">
+                        <div class="dash-welcome-text">
+                            <h3>Bem-vindo, Rafael Souza <i data-lucide="hand" style="width:24px;height:24px;vertical-align:middle;color:var(--accent2)"></i></h3>
+                            <p>Aqui está o status em tempo real da sua infraestrutura e projetos.</p>
+                        </div>
+                        <button class="btn-ghost" onclick="doLogout()">Fazer logoff</button>
+                    </div>
+                    <div class="dash-grid fade-in delay-1">
+                        <div class="dash-metric">
+                            <div class="dash-metric-label">Projetos Ativos</div>
+                            <div class="dash-metric-val">2</div>
+                        </div>
+                        <div class="dash-metric">
+                            <div class="dash-metric-label">Horas Trabalhadas (Mês)</div>
+                            <div class="dash-metric-val">124</div>
+                        </div>
+                        <div class="dash-metric">
+                            <div class="dash-metric-label">Próxima Milestone</div>
+                            <div class="dash-metric-val"
+                                style="font-size: 18px; padding-top:6px; color: var(--accent2)">28 de Agosto</div>
+                        </div>
+                    </div>
+                    <div class="projects-table fade-in delay-2">
+                        <div class="pt-header">
+                            <h4>Módulos em Produção & Desenvolvimento</h4>
+                            <button class="action-btn" onclick="showSection('request')">+ Adicionar Escopo</button>
+                        </div>
+                        <table class="pt">
+                            <thead>
+                                <tr>
+                                    <th>Projeto / Módulo</th>
+                                    <th>Status</th>
+                                    <th>Progresso da Sprint</th>
+                                    <th>Lançamento</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>App Mobile Delivery — V2.0</td>
+                                    <td><span class="status-badge badge-active"><span
+                                                class="status-dot"></span>Desenvolvimento</span></td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width:72%"></div>
+                                        </div>
+                                    </td>
+                                    <td>15 Set 2025</td>
+                                    <td><button class="action-btn">Repositório</button></td>
+                                </tr>
+                                <tr>
+                                    <td>CRM Web Corporativo</td>
+                                    <td><span class="status-badge badge-review"><span class="status-dot"></span>Deploy
+                                            Review</span></td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width:95%"></div>
+                                        </div>
+                                    </td>
+                                    <td>28 Ago 2025</td>
+                                    <td><button class="action-btn">Ver QA</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Integração Gateway de Pagamento</td>
+                                    <td><span class="status-badge badge-pending"><span
+                                                class="status-dot"></span>Briefing</span></td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width:10%"></div>
+                                        </div>
+                                    </td>
+                                    <td>Outubro 2025</td>
+                                    <td><button class="action-btn">Editar</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE (when not logged in) -->
+                <div id="portalInfo" class="animate-hidden delay-1" style="align-self: start;">
+                    <div
+                        style="background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; box-shadow: 0 10px 40px rgba(0,0,0,0.4);">
+                        <p
+                            style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 24px;">
+                            Transparência total</p>
+                        <div style="display: flex; flex-direction: column; gap: 24px;">
+                            <div style="display:flex;gap:16px;align-items:flex-start">
+                                <div class="feature-icon" style="width:38px;height:38px;margin-bottom:0;border-radius:10px;">
+                                    <i data-lucide="trending-up" style="width:18px;height:18px"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:4px">Kanban & Timeline</div>
+                                    <div style="font-size:13px;color:var(--text2);line-height:1.4">Visualize o progresso de cada feature no Jira ou Trello integrados.</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:16px;align-items:flex-start">
+                                <div class="feature-icon" style="width:38px;height:38px;margin-bottom:0;border-radius:10px;">
+                                    <i data-lucide="message-square" style="width:18px;height:18px"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:4px">Atendimento Direto</div>
+                                    <div style="font-size:13px;color:var(--text2);line-height:1.4">Canal dedicado via Slack ou portal com os devs responsáveis.</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:16px;align-items:flex-start">
+                                <div class="feature-icon" style="width:38px;height:38px;margin-bottom:0;border-radius:10px;">
+                                    <i data-lucide="files" style="width:18px;height:18px"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:4px">Central de Documentos</div>
+                                    <div style="font-size:13px;color:var(--text2);line-height:1.4">Acesso a documentação de API, arquitetura, design e contratos.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════ ADMIN ═══════════════════════════════ -->
+    <div id="admin" class="section">
+        <div class="admin-wrap">
+            <!-- ADMIN LOGIN -->
+            <div id="adminLoginWrap">
+                <div class="section-header animate-hidden" style="margin-top: 40px;">
+                    <div class="section-eyebrow">Acesso Privado</div>
+                    <h2 class="section-title">TwoType System</h2>
+                </div>
+                <div class="admin-login animate-hidden">
+                    <div style="text-align:center;margin-bottom:28px">
+                        <div
+                            style="width:52px;height:52px;border-radius:14px;background:var(--accent-glow);border:1px solid rgba(91,106,247,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow: 0 4px 20px var(--accent-glow)">
+                            <i data-lucide="lock" style="color:var(--accent2);width:24px;height:24px;"></i></div>
+                        <p style="font-size:13px;color:var(--text3)">Módulo Restrito Corporativo</p>
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail Admin</label>
+                        <input type="text" id="adminUser" placeholder="admin@twotype.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Senha Segura</label>
+                        <input type="password" id="adminPass" placeholder="••••••••">
+                    </div>
+                    <button class="btn-full" onclick="doAdminLogin()">Autenticar</button>
+                    <div class="portal-divider" style="margin-top:20px;">demo: admin@twotype.com / admin123</div>
+                </div>
+            </div>
+
+            <!-- ADMIN DASHBOARD -->
+            <div class="admin-dashboard" id="adminDash">
+                <div class="admin-topbar fade-in">
+                    <div>
+                        <h3>Overview Geral</h3>
+                        <p style="font-size:13px;color:var(--text2);margin-top:2px">Bem-vindo ao cockpit de gestão,
+                            Admin.</p>
+                    </div>
+                    <div style="display:flex;gap:12px; align-items:center;">
+                        <span class="status-badge badge-active"><span class="status-dot"></span>Servers: All Systems
+                            Go</span>
+                        <button class="btn-ghost" onclick="doAdminLogout()">Encerrar Sessão</button>
+                    </div>
+                </div>
+
+                <div class="admin-metrics fade-in delay-1">
+                    <div class="admin-metric">
+                        <div class="am-label">Módulos Ativos</div>
+                        <div class="am-val">28</div>
+                        <div class="am-delta up">↗ +4 esta semana</div>
+                    </div>
+                    <div class="admin-metric">
+                        <div class="am-label">Receita Recorrente (MRR)</div>
+                        <div class="am-val">R$ 112k</div>
+                        <div class="am-delta up">↗ +8.5% crescimento</div>
+                    </div>
+                    <div class="admin-metric">
+                        <div class="am-label">Leads Inbound</div>
+                        <div class="am-val">15</div>
+                        <div class="am-delta" style="color:var(--amber)">● 4 aguardando follow-up</div>
+                    </div>
+                    <div class="admin-metric">
+                        <div class="am-label">Clientes de Contrato</div>
+                        <div class="am-val">34</div>
+                        <div class="am-delta up">↗ +3 conversões</div>
+                    </div>
+                </div>
+
+                <div class="admin-panels fade-in delay-2">
+                    <!-- Left: projects table -->
+                    <div class="admin-panel">
+                        <div class="admin-panel-header">
+                            <h4>Roadmap de Equipes</h4>
+                            <span class="pill">28 Ativos</span>
+                        </div>
+                        <table class="at">
+                            <thead>
+                                <tr>
+                                    <th>Cliente Org.</th>
+                                    <th>Projeto / Módulo</th>
+                                    <th>Health Status</th>
+                                    <th>Lead Eng.</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Fintech Alpha</td>
+                                    <td>Core Banking API</td>
+                                    <td><span class="status-badge badge-active" style="font-size:10px"><span
+                                                class="status-dot"></span>Estável</span></td>
+                                    <td style="color:var(--text3)">M. Silva</td>
+                                    <td><button class="action-btn">Log</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Logística Express</td>
+                                    <td>App Rastreamento Cross-Platform</td>
+                                    <td><span class="status-badge badge-review" style="font-size:10px"><span
+                                                class="status-dot"></span>QA</span></td>
+                                    <td style="color:var(--text3)">P. Mendes</td>
+                                    <td><button class="action-btn">Merge</button></td>
+                                </tr>
+                                <tr>
+                                    <td>E-commerce X</td>
+                                    <td>Checkout com Pagar.me</td>
+                                    <td><span class="status-badge badge-active" style="font-size:10px"><span
+                                                class="status-dot"></span>Produção</span></td>
+                                    <td style="color:var(--text3)">F. Costa</td>
+                                    <td><button class="action-btn">Status</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Grupo MedCorp</td>
+                                    <td>Sistema de Agendamento IA</td>
+                                    <td><span class="status-badge badge-pending" style="font-size:10px"><span
+                                                class="status-dot"></span>Design T.</span></td>
+                                    <td style="color:var(--text3)">A. Lima</td>
+                                    <td><button class="action-btn">Review</button></td>
+                                </tr>
+                                <tr>
+                                    <td>B2B SaaS</td>
+                                    <td>Dashboards Metabase</td>
+                                    <td><span class="status-badge badge-active" style="font-size:10px"><span
+                                                class="status-dot"></span>Deploy</span></td>
+                                    <td style="color:var(--text3)">M. Silva</td>
+                                    <td><button class="action-btn">Log</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Right: inbox + new requests -->
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div class="admin-panel">
+                            <div class="admin-panel-header">
+                                <h4>Novos Leads (CRM)</h4>
+                                <span class="pill"
+                                    style="background:rgba(255,69,58,0.1);color:var(--red);border-color:rgba(255,69,58,0.2)">4
+                                    Novas req.</span>
+                            </div>
+                            <div class="inbox-list">
+                                <div class="inbox-item">
+                                    <div class="unread-dot"></div>
+                                    <div class="inbox-item-name">Mariana Torres (Agro)</div>
+                                    <div class="inbox-item-msg">Sistema de gestão de insumos on-premise...</div>
+                                    <div class="inbox-item-time">15m atrás</div>
+                                </div>
+                                <div class="inbox-item">
+                                    <div class="unread-dot"></div>
+                                    <div class="inbox-item-name">Startup EduTech</div>
+                                    <div class="inbox-item-msg">Nova plataforma EAD com vídeos na AWS...</div>
+                                    <div class="inbox-item-time">3h atrás</div>
+                                </div>
+                                <div class="inbox-item">
+                                    <div class="unread-dot"></div>
+                                    <div class="inbox-item-name">Rede de Clínicas</div>
+                                    <div class="inbox-item-msg">Integração de pagamentos com split...</div>
+                                    <div class="inbox-item-time">22h atrás</div>
+                                </div>
+                            </div>
+                            <div style="padding: 10px 16px 16px; text-align: center;">
+                                <a href="#"
+                                    style="color: var(--accent2); font-size: 12px; font-weight: 500; text-decoration: none;">Ver
+                                    todos no Pipeline →</a>
+                            </div>
+                        </div>
+
+                        <div class="admin-panel" style="padding: 24px;">
+                            <p
+                                style="font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:16px; font-weight: 600;">
+                                Operações Rápidas</p>
+                            <div style="display:flex;flex-direction:column;gap:10px">
+                                <button class="btn-full" onclick="showSection('request')">+ Novo Projeto /
+                                    Cliente</button>
+                                <button class="btn-full secondary" style="margin-top:0"><i data-lucide="database" style="width:14px;height:14px;margin-right:8px;vertical-align:-2px"></i> Exportar Dataset Geral</button>
+                                <button class="btn-full secondary" style="margin-top:0"><i data-lucide="receipt" style="width:14px;height:14px;margin-right:8px;vertical-align:-2px"></i> Emitir Faturas Lote</button>
+                                <button class="btn-full secondary" style="margin-top:0"><i data-lucide="settings" style="width:14px;height:14px;margin-right:8px;vertical-align:-2px"></i> Configurações Cloud</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+    <footer class="fade-in">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="nav-logo logo-shimmer" onclick="showSection('home')">
+                <div class="logo-icon">2</div>
+                <span class="logo-text">Type</span>
+            </div>
+                <p>Onde a excelência da engenharia se une à inovação do software moderno. Projetamos e construímos o futuro digital do seu negócio.</p>
+                <div class="social-links">
+                    <a href="https://instagram.com/twotype" target="_blank" class="social-btn drawn-icon"><i data-lucide="instagram"></i></a>
+                    <a href="https://wa.me/5524999562535" target="_blank" class="social-btn drawn-icon"><i data-lucide="message-circle"></i></a>
+                    <a href="https://linkedin.com" target="_blank" class="social-btn drawn-icon"><i data-lucide="linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h5>Plataforma</h5>
+                <a onclick="showSection('services')">Serviços & Expertise</a>
+                <a onclick="showSection('about')">Quem Somos</a>
+                <a onclick="showSection('request')">Solicitar Proposta</a>
+                <a onclick="showSection('portal')">Portal do Cliente</a>
+            </div>
+            <div class="footer-col">
+                <h5>Recursos</h5>
+                <a href="#">Casos de Uso</a>
+                <a href="#">Documentação API</a>
+                <a href="#">Suporte Premium</a>
+                <a onclick="showSection('admin')">Painel Admin</a>
+            </div>
+            <div class="footer-col">
+                <h5>Contato Direto</h5>
+                <a href="mailto:twotype@gmail.com" class="contact-link drawn-icon"><i data-lucide="mail"></i> twotype@gmail.com</a>
+                <a href="https://wa.me/5524999562535" target="_blank" class="contact-link drawn-icon"><i data-lucide="phone"></i> +55 (24) 99956-2535</a>
+                <div style="margin-top: 10px; color: var(--text3); font-size: 11px;">Atendimento: Seg a Sex, 9h às 18h</div>
+            </div>
+            
+            <div class="footer-col social-artistic">
+                <h5>Presença Digital</h5>
+                <div class="art-links">
+                    <a href="https://instagram.com/twotype" target="_blank" class="art-btn insta">
+                        <img src="instagram_neon.png" alt="Instagram Neon" class="art-img">
+                        <span>Instagram</span>
+                    </a>
+                    <a href="https://wa.me/5524999562535" target="_blank" class="art-btn whats">
+                        <img src="whatsapp_neon.png" alt="WhatsApp Neon" class="art-img">
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" class="art-btn linke">
+                        <img src="linkedin_neon.png" alt="LinkedIn Neon" class="art-img">
+                        <span>LinkedIn</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 TwoType Software Solutions. Todos os direitos reservados.</p>
+            <p>Feito com excelência 🇧🇷 por TwoType Eng.</p>
+        </div>
+    <!-- Floating UI -->
+    <div class="floating-ui">
+        <!-- Support Assistant -->
+        <div class="support-panel" id="supportPanel">
+            <div class="support-header">
+                <div class="support-avatar"><img src="twozinho.png" alt="Twozinho"></div>
+                <div class="support-info">
+                    <strong>Twozinho</strong>
+                    <span>Online para ajudar você</span>
+                </div>
+                <button class="support-close" onclick="toggleSupport()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="support-body" id="supportBody">
+                <div class="support-msg bot">Olá! Sou o Twozinho. Estou aqui para ajudar você a projetar a melhor solução para o seu negócio. Como posso ser útil hoje?</div>
+                <div class="support-options">
+                    <button onclick="supportAsk('Criação de Software')">Quero criar um software</button>
+                    <button onclick="supportAsk('Evoluir Sistema')">Preciso evoluir um sistema</button>
+                    <button onclick="supportAsk('Automação')">Busco automação com IA</button>
+                </div>
+            </div>
+        </div>
+
+        <button class="fab assistant-fab" onclick="toggleSupport()">
+            <i data-lucide="sparkles"></i>
+        </button>
+        <a href="https://wa.me/5524999562535" target="_blank" class="fab whatsapp-fab">
+            <i data-lucide="message-circle"></i>
+        </a>
+    </div>
+
+    <!-- SVG Filter for Hand-Drawn Effect -->
+    <svg style="visibility: hidden; position: absolute;" width="0" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+            <filter id="hand-drawn-filter">
+                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Scripts -->
+    <script src="js/script.js"></script>
+</body>
+
+</html>
