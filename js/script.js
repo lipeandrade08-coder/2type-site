@@ -1,9 +1,9 @@
 // ── GLOBALS ──
 let serviceRequests = [];
-try { serviceRequests = JSON.parse(localStorage.getItem('nexcore_requests') || '[]'); if(!Array.isArray(serviceRequests)) serviceRequests = []; } catch(e) { serviceRequests = []; }
+try { serviceRequests = JSON.parse(localStorage.getItem('nexcore_requests') || '[]'); if (!Array.isArray(serviceRequests)) serviceRequests = []; } catch (e) { serviceRequests = []; }
 
 let currentColab = null;
-try { currentColab = JSON.parse(localStorage.getItem('nexcore_colab') || 'null'); } catch(e) { currentColab = null; }
+try { currentColab = JSON.parse(localStorage.getItem('nexcore_colab') || 'null'); } catch (e) { currentColab = null; }
 
 let currentApproveId = null;
 let currentChatId = null;
@@ -1668,10 +1668,10 @@ function adminUpdateTicketStatus() {
 
     tickets[idx].status = newStatus;
     saveAdminTickets(tickets);
-    
+
     // Ping client side
     localStorage.setItem('nexcore_support_ping', Date.now().toString());
-    
+
     renderAdminSupportTickets();
 }
 
@@ -1743,7 +1743,7 @@ function renderAdminEquipe() {
     if (!grid) return;
 
     let allChats = {};
-    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch(e) { allChats = {}; }
+    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch (e) { allChats = {}; }
     if (countEl) countEl.textContent = KNOWN_COLABS.length;
 
     grid.innerHTML = '';
@@ -1803,7 +1803,7 @@ function renderAdminColabMessages() {
     if (!container || !currentAdminColabChatEmail) return;
 
     let allChats = {};
-    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch(e) { allChats = {}; }
+    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch (e) { allChats = {}; }
     const msgs = allChats[currentAdminColabChatEmail] || [];
 
     if (msgs.length === 0) {
@@ -1827,7 +1827,7 @@ function sendAdminColabMessage() {
     if (!text) return;
 
     let allChats = {};
-    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch(e) { allChats = {}; }
+    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch (e) { allChats = {}; }
     if (!allChats[currentAdminColabChatEmail]) allChats[currentAdminColabChatEmail] = [];
     allChats[currentAdminColabChatEmail].push({
         sender: 'admin',
@@ -1847,7 +1847,7 @@ function sendAdminColabMessage() {
 
 function markColabMessagesRead(email) {
     let allChats = {};
-    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch(e) { allChats = {}; }
+    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch (e) { allChats = {}; }
     if (!allChats[email]) return;
     allChats[email].forEach(m => { if (m.sender === 'colab') m.readByAdmin = true; });
     saveToStorage('nexcore_colab_chats', allChats);
@@ -1875,7 +1875,7 @@ function renderColabAdminMessages() {
     if (!container || !currentColab) return;
 
     let allChats = {};
-    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch(e) { allChats = {}; }
+    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch (e) { allChats = {}; }
     const msgs = allChats[currentColab.email] || [];
 
     if (msgs.length === 0) {
@@ -1899,7 +1899,7 @@ function sendColabMessage() {
     if (!text) return;
 
     let allChats = {};
-    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch(e) { allChats = {}; }
+    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch (e) { allChats = {}; }
     if (!allChats[currentColab.email]) allChats[currentColab.email] = [];
     allChats[currentColab.email].push({
         sender: 'colab',
@@ -1920,7 +1920,7 @@ function sendColabMessage() {
 function markAdminMessagesRead() {
     if (!currentColab) return;
     let allChats = {};
-    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch(e) { allChats = {}; }
+    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch (e) { allChats = {}; }
     if (!allChats[currentColab.email]) return;
     allChats[currentColab.email].forEach(m => { if (m.sender === 'admin') m.readByColab = true; });
     saveToStorage('nexcore_colab_chats', allChats);
@@ -1930,7 +1930,7 @@ function markAdminMessagesRead() {
 function updateColabUnreadBadge() {
     if (!currentColab) return;
     let allChats = {};
-    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch(e) { allChats = {}; }
+    try { allChats = JSON.parse(localStorage.getItem('nexcore_colab_chats') || '{}'); } catch (e) { allChats = {}; }
     const msgs = allChats[currentColab.email] || [];
     const unread = msgs.filter(m => m.sender === 'admin' && !m.readByColab).length;
     const badge = document.getElementById('colabUnreadBadge');
