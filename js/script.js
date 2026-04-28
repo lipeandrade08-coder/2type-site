@@ -2,6 +2,123 @@
 let serviceRequests = [];
 try { serviceRequests = JSON.parse(localStorage.getItem('nexcore_requests') || '[]'); if (!Array.isArray(serviceRequests)) serviceRequests = []; } catch (e) { serviceRequests = []; }
 
+// Wipe if we detect bad/corrupted data from previous testing
+const hasCorruptedData = serviceRequests.some(r => r.name === 'Visitante' && r.serviceType === 'Consultoria');
+if (serviceRequests.length === 0 || hasCorruptedData) {
+    serviceRequests = [
+        {
+            id: Date.now() - 100000,
+            name: 'Mariana Torres',
+            email: 'mariana@agro.com.br',
+            company: 'AgroTech Sul',
+            phone: '(51) 98888-8888',
+            serviceType: '📊 ERP / Gestão',
+            deadline: 'Médio prazo (3 a 6 meses)',
+            budget: 'Acima de R$ 100.000',
+            details: 'Sistema de gestão de insumos on-premise com sincronização em nuvem e painel gerencial.',
+            status: 'novo',
+            progress: 0,
+            date: new Date(Date.now() - 86400000 * 2).toLocaleDateString('pt-BR'),
+            techStack: '',
+            edital: '',
+            serviceDeadline: '',
+            lastUpdate: '',
+            messages: [],
+            assignedTo: null
+        },
+        {
+            id: Date.now() - 200000,
+            name: 'Carlos Almeida',
+            email: 'carlos@startup.com',
+            company: 'EduTech Online',
+            phone: '(11) 97777-7777',
+            serviceType: '🌐 Web & Plataforma',
+            deadline: 'Curto prazo (1 a 3 meses)',
+            budget: 'R$ 15.000 – R$ 50.000',
+            details: 'Nova plataforma EAD com vídeos na AWS, sistema de pagamentos e gamificação para alunos.',
+            status: 'novo',
+            progress: 0,
+            date: new Date(Date.now() - 86400000 * 5).toLocaleDateString('pt-BR'),
+            techStack: '',
+            edital: '',
+            deadlineCliente: '',
+            deadlineColab: '',
+            paymentValue: '',
+            lastUpdate: '',
+            messages: [],
+            assignedTo: null
+        },
+        {
+            id: Date.now() - 300000,
+            name: 'Logística Express',
+            email: 'contato@logexpress.com',
+            company: 'Logística Express',
+            phone: '(21) 96666-6666',
+            serviceType: '📱 Aplicativo Mobile',
+            deadline: 'Curto prazo (1 a 3 meses)',
+            budget: 'R$ 50.000 – R$ 100.000',
+            details: 'App de rastreamento cross-platform para motoristas, com offline-first.',
+            status: 'aprovado',
+            progress: 0,
+            date: new Date(Date.now() - 86400000 * 10).toLocaleDateString('pt-BR'),
+            techStack: 'React Native, Node.js',
+            edital: 'App mobile híbrido para rastreio e confirmação de entrega via geolocalização.',
+            deadlineCliente: '15/08/2025',
+            deadlineColab: '01/08/2025',
+            paymentValue: 35000,
+            lastUpdate: 'Aprovado pelo cliente. Aguardando dev.',
+            messages: [],
+            assignedTo: null
+        },
+        {
+            id: Date.now() - 400000,
+            name: 'Fintech Alpha',
+            email: 'tech@fintechalpha.com',
+            company: 'Fintech Alpha',
+            phone: '(11) 95555-5555',
+            serviceType: '🔌 API / Integração',
+            deadline: 'Médio prazo (3 a 6 meses)',
+            budget: 'Acima de R$ 100.000',
+            details: 'Core Banking API, documentação e portal do desenvolvedor.',
+            status: 'execucao',
+            progress: 65,
+            date: new Date(Date.now() - 86400000 * 30).toLocaleDateString('pt-BR'),
+            techStack: '.NET Core, PostgreSQL, AWS',
+            edital: 'Refatoração da arquitetura e desenvolvimento de novas APIs para transações financeiras.',
+            deadlineCliente: '10/10/2025',
+            deadlineColab: '20/09/2025',
+            paymentValue: 120000,
+            lastUpdate: 'Endpoints de pagamentos concluídos. Iniciando testes.',
+            messages: [],
+            assignedTo: 'Colaborador'
+        },
+        {
+            id: Date.now() - 500000,
+            name: 'B2B SaaS Inc',
+            email: 'ceo@b2bsaas.com',
+            company: 'B2B SaaS',
+            phone: '(41) 94444-4444',
+            serviceType: '💡 Consultoria / Outro',
+            deadline: 'Urgente (menos de 1 mês)',
+            budget: 'R$ 15.000 – R$ 50.000',
+            details: 'Dashboards gerenciais Metabase integrados ao software atual.',
+            status: 'concluido',
+            progress: 100,
+            date: new Date(Date.now() - 86400000 * 45).toLocaleDateString('pt-BR'),
+            techStack: 'Metabase, SQL, Docker',
+            edital: 'Implementação de BI com Metabase e relatórios gerenciais.',
+            deadlineCliente: '10/02/2025',
+            deadlineColab: '05/02/2025',
+            paymentValue: 18000,
+            lastUpdate: 'Implantado no ambiente de produção com sucesso.',
+            messages: [],
+            assignedTo: 'Colaborador'
+        }
+    ];
+    saveToStorage('nexcore_requests', serviceRequests);
+}
+
+
 let currentColab = null;
 try { currentColab = JSON.parse(localStorage.getItem('nexcore_colab') || 'null'); } catch (e) { currentColab = null; }
 
@@ -1184,6 +1301,107 @@ function openChat(id) {
     renderMessages();
 }
 
+// ══════════════════════════════════════════════════════════════
+// ── CLIENT SUPPORT CHAT ──
+// ══════════════════════════════════════════════════════════════
+
+let currentClientSupportTicketId = null;
+
+function openClientSupportChat(ticketId) {
+    const tickets = getAdminTickets();
+    const ticket = tickets.find(t => t.id === ticketId);
+    if (!ticket) return;
+
+    currentClientSupportTicketId = ticketId;
+    document.getElementById('clientSupportChatModal').style.display = 'flex';
+    setTimeout(() => {
+        document.querySelector('#clientSupportChatModal .modal-content').classList.add('visible');
+    }, 10);
+    renderClientSupportChatMessages();
+}
+
+function closeClientSupportChat() {
+    currentClientSupportTicketId = null;
+    const modalContent = document.querySelector('#clientSupportChatModal .modal-content');
+    if (modalContent) modalContent.classList.remove('visible');
+    setTimeout(() => {
+        document.getElementById('clientSupportChatModal').style.display = 'none';
+    }, 300);
+}
+
+function renderClientSupportChatMessages() {
+    const listEl = document.getElementById('clientSupportChatMessages');
+    if (!listEl || !currentClientSupportTicketId) return;
+
+    const tickets = getAdminTickets();
+    const ticket = tickets.find(t => t.id === currentClientSupportTicketId);
+    if (!ticket) return;
+
+    listEl.innerHTML = '';
+
+    // Original Message Bubble
+    const msgDate = new Date(ticket.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const originalMsg = `
+        <div style="margin-bottom:12px; align-self:flex-start; max-width:85%;">
+            <div style="background:var(--bg2); border:1px solid var(--border); padding:12px; border-radius:12px 12px 12px 0;">
+                <div style="font-size:11px; color:var(--accent2); margin-bottom:4px; font-weight:600;">Você (Chamado Inicial)</div>
+                <div style="font-size:13px; color:#fff; line-height:1.5;">${escapeHtml(ticket.message)}</div>
+                <div style="font-size:10px; color:var(--text3); margin-top:6px; text-align:right;">${msgDate}</div>
+            </div>
+        </div>
+    `;
+    listEl.insertAdjacentHTML('beforeend', originalMsg);
+
+    // Chat History
+    (ticket.chat || []).forEach(msg => {
+        const isClient = msg.sender === 'client';
+        const align = isClient ? 'flex-end' : 'flex-start';
+        const bg = isClient ? 'linear-gradient(135deg, var(--accent1), var(--accent2))' : 'var(--bg2)';
+        const border = isClient ? 'none' : '1px solid var(--border)';
+        const radius = isClient ? '12px 12px 0 12px' : '12px 12px 12px 0';
+        const senderName = isClient ? 'Você' : (msg.senderName || 'Suporte NexCore');
+        const nameColor = isClient ? '#fff' : 'var(--accent2)';
+
+        const msgHtml = `
+            <div style="margin-bottom:12px; align-self:${align}; max-width:85%; margin-left:${isClient ? 'auto' : '0'}; margin-right:${isClient ? '0' : 'auto'}; display:flex; flex-direction:column;">
+                <div style="background:${bg}; border:${border}; padding:12px; border-radius:${radius};">
+                    <div style="font-size:11px; color:${nameColor}; margin-bottom:4px; font-weight:600; opacity:0.9;">${senderName}</div>
+                    <div style="font-size:13px; color:#fff; line-height:1.5;">${escapeHtml(msg.text)}</div>
+                    <div style="font-size:10px; color:rgba(255,255,255,0.6); margin-top:6px; text-align:${isClient ? 'left' : 'right'};">${msg.time}</div>
+                </div>
+            </div>
+        `;
+        listEl.insertAdjacentHTML('beforeend', msgHtml);
+    });
+
+    listEl.scrollTop = listEl.scrollHeight;
+}
+
+function handleClientSupportSendMessage() {
+    const input = document.getElementById('clientSupportChatInput');
+    const text = input.value.trim();
+    if (!text || !currentClientSupportTicketId) return;
+
+    const tickets = getAdminTickets();
+    const tIndex = tickets.findIndex(t => t.id === currentClientSupportTicketId);
+    if (tIndex === -1) return;
+
+    if (!tickets[tIndex].chat) tickets[tIndex].chat = [];
+    tickets[tIndex].chat.push({
+        sender: 'client',
+        senderName: 'Cliente',
+        text: text,
+        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+    });
+
+    saveToStorage('nexcore_support_tickets', tickets);
+    localStorage.setItem('nexcore_support_ping', Date.now().toString());
+
+    input.value = '';
+    renderClientSupportChatMessages();
+    renderSupportTickets();
+}
+
 function closeChat() {
     document.getElementById('chatModal').style.display = 'none';
     currentChatId = null;
@@ -1706,7 +1924,7 @@ function renderSupportTickets() {
             : '';
 
         const html = `
-            <div class="ticket-item fade-in">
+            <div class="ticket-item fade-in" onclick="openClientSupportChat(${ticket.id})" style="cursor:pointer; transition:all 0.2s;">
                 <div class="ticket-header">
                     <div class="ticket-subject">${escapeHtml(ticket.subject)}</div>
                     <div style="font-size:10px;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:${statusColor}22;color:${statusColor};border:1px solid ${statusColor}44;">${statusLabel}</div>
