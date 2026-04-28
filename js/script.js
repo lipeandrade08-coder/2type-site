@@ -657,6 +657,20 @@ function doAdminLogout() {
     document.getElementById('adminPass').value = '';
 }
 
+// Demo Login Filler
+function fillDemo(type) {
+    if (type === 'client') {
+        document.getElementById('loginEmail').value = 'cliente@twotype.com';
+        document.getElementById('loginPass').value = 'demo123';
+    } else if (type === 'admin') {
+        document.getElementById('adminUser').value = 'admin@twotype.com';
+        document.getElementById('adminPass').value = 'admin123';
+    } else if (type === 'colab') {
+        document.getElementById('colabEmail').value = 'colaborador@twotype.com';
+        document.getElementById('colabPass').value = 'colab123';
+    }
+}
+
 // Intersection Observer for Scroll Animations
 const observerOptions = {
     root: null,

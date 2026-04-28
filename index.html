@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2Type — Desenvolvimento de Software de Alto Nível</title>
-    <meta name="description" content="Da ideia ao produto final — desenvolvemos sistemas, apps e soluções digitais com excelência técnica e design de alto nível. Parceiros de tecnologia para empresas que querem crescer.">
+    <meta name="description" content="TwoType: Especialistas em desenvolvimento de software sob medida, aplicativos mobile, integrações de IA e plataformas B2B. Acelere seu crescimento com engenharia digital de ponta.">
 
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website">
@@ -504,7 +504,7 @@
                         <button class="btn-full" onclick="doLogin()">Entrar</button>
                         <button class="btn-full secondary" onclick="showSection('request')">Ainda não sou cliente
                             →</button>
-                        <div class="portal-divider">Acesso demo: cliente@twotype.com / demo123</div>
+                        <button class="btn-ghost" style="margin-top: 10px;" onclick="fillDemo('client')">Entrar como demo</button>
                     </div>
                 </div>
 
@@ -727,7 +727,7 @@
                         <input type="password" id="adminPass" placeholder="••••••••">
                     </div>
                     <button class="btn-full" onclick="doAdminLogin()">Autenticar</button>
-                    <div class="portal-divider" style="margin-top:20px;">demo: admin@twotype.com / admin123</div>
+                    <button class="btn-ghost" style="margin-top: 10px;" onclick="fillDemo('admin')">Entrar como demo</button>
                 </div>
             </div>
 
@@ -993,8 +993,7 @@
                             <input type="password" id="colabPass" placeholder="••••••••">
                         </div>
                         <button class="btn-full" onclick="doColabLogin()">Entrar no Workspace</button>
-                        <div class="portal-divider" style="margin-top:20px;">demo: colaborador@twotype.com / colab123
-                        </div>
+                        <button class="btn-ghost" style="margin-top: 10px;" onclick="fillDemo('colab')">Entrar como demo</button>
                     </div>
                 </div>
 
@@ -1083,7 +1082,7 @@
                 <h5>Contato Direto</h5>
                 <a href="mailto:twotype@gmail.com" class="contact-link drawn-icon"><i data-lucide="mail"></i>
                     twotype@gmail.com</a>
-                <a href="https://wa.me/5524999562535" target="_blank" class="contact-link drawn-icon"><i
+                <a href="https://wa.me/5524999562535" target="_blank" rel="noopener noreferrer" class="contact-link drawn-icon"><i
                         data-lucide="phone"></i> +55 (24) 99956-2535</a>
                 <div style="margin-top: 10px; color: var(--text3); font-size: 11px;">Atendimento: Seg a Sex, 9h às 18h
                 </div>
@@ -1092,16 +1091,16 @@
             <div class="footer-col social-artistic">
                 <h5>Presença Digital</h5>
                 <div class="art-links">
-                    <a href="https://instagram.com/twotype" target="_blank" class="art-btn insta">
-                        <img src="instagram_neon.png" alt="Instagram Neon" class="art-img">
+                    <a href="https://instagram.com/twotype" target="_blank" rel="noopener noreferrer" class="art-btn insta">
+                        <img src="assets/img/instagram_neon.png" alt="Instagram Neon" class="art-img">
                         <span>Instagram</span>
                     </a>
-                    <a href="https://wa.me/5524999562535" target="_blank" class="art-btn whats">
-                        <img src="whatsapp_neon.png" alt="WhatsApp Neon" class="art-img">
+                    <a href="https://wa.me/5524999562535" target="_blank" rel="noopener noreferrer" class="art-btn whats">
+                        <img src="assets/img/whatsapp_neon.png" alt="WhatsApp Neon" class="art-img">
                         <span>WhatsApp</span>
                     </a>
-                    <a href="https://linkedin.com" target="_blank" class="art-btn linke">
-                        <img src="linkedin_neon.png" alt="LinkedIn Neon" class="art-img">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="art-btn linke">
+                        <img src="assets/img/linkedin_neon.png" alt="LinkedIn Neon" class="art-img">
                         <span>LinkedIn</span>
                     </a>
                 </div>
@@ -1111,12 +1110,13 @@
             <p>© 2026 TwoType Software Solutions. Todos os direitos reservados.</p>
             <p>Feito com excelência 🇧🇷 por TwoType Eng.</p>
         </div>
+    </footer>
         <!-- Floating UI -->
         <div class="floating-ui">
             <!-- Support Assistant -->
             <div class="support-panel" id="supportPanel">
                 <div class="support-header">
-                    <div class="support-avatar"><img src="twozinho.png" alt="Twozinho"></div>
+                    <div class="support-avatar"><img src="assets/img/twozinho.png" alt="Twozinho"></div>
                     <div class="support-info">
                         <strong>Twozinho</strong>
                         <span>Online para ajudar você</span>
@@ -1137,7 +1137,7 @@
             <button class="fab assistant-fab" onclick="toggleSupport()">
                 <i data-lucide="sparkles"></i>
             </button>
-            <a href="https://wa.me/5524999562535" target="_blank" class="fab whatsapp-fab">
+            <a href="https://wa.me/5524999562535" target="_blank" rel="noopener noreferrer" class="fab whatsapp-fab">
                 <i data-lucide="message-circle"></i>
             </a>
         </div>
@@ -1288,7 +1288,7 @@
 
                     <div id="detAttachmentContainer" style="margin-bottom:24px; display:none">
                         <div style="font-size:12px; color:var(--text3); margin-bottom:10px">Documento Anexo</div>
-                        <a id="detDownloadBtn" href="#" download target="_blank" class="btn-ghost" style="display:flex; align-items:center; justify-content:center; gap:8px; border-color:var(--accent2); color:var(--accent2); background:rgba(91,106,247,0.05)">
+                        <a id="detDownloadBtn" href="#" download target="_blank" rel="noopener noreferrer" class="btn-ghost" style="display:flex; align-items:center; justify-content:center; gap:8px; border-color:var(--accent2); color:var(--accent2); background:rgba(91,106,247,0.05)">
                             <i data-lucide="file-text"></i> <span id="detFileName">documento.pdf</span>
                         </a>
                     </div>
