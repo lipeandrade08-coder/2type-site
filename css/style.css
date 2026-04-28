@@ -34,9 +34,12 @@ body {
   font-family: 'DM Sans', sans-serif;
   background: var(--bg);
   color: var(--text);
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 18px;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 h1,
@@ -73,7 +76,7 @@ h5 {
   height: 100%;
   z-index: -1;
   pointer-events: none;
-  background: var(--bg);
+  background: radial-gradient(circle at 30% 50%, #1a0b2e 0%, #050505 100%);
 }
 
 /* ── NAV ── */
@@ -97,7 +100,7 @@ nav {
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 4px; /* Nearly touching now */
   cursor: pointer;
   transition: transform 0.2s;
 }
@@ -107,21 +110,26 @@ nav {
 }
 
 .logo-icon {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #7c3aed, #5b21b6);
-  border: 1px solid rgba(167, 139, 250, 0.4);
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  background: #000;
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Outfit', sans-serif;
-  font-size: 24px;
-  font-weight: 800;
-  color: #fff;
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
   position: relative;
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+}
+
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: screen;
+  filter: brightness(1.1) contrast(1.1);
 }
 
 /* Corner accents similar to the image icon */
@@ -150,7 +158,7 @@ nav {
 
 .logo-text {
   font-family: 'Syne', sans-serif;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.5px;
   background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 50%, #ffffff 100%);
@@ -159,6 +167,7 @@ nav {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: logoShimmer 4s linear infinite;
+  margin-left: 2px; /* Extra nudge closer */
 }
 
 @keyframes logoShimmer {
@@ -181,32 +190,7 @@ nav {
 }
 
 
-.nav-links {
-  display: flex;
-  gap: 8px;
-}
-
-.nav-links a {
-  color: var(--text2);
-  text-decoration: none;
-  font-size: 13.5px;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-
-.nav-links a:hover {
-  color: var(--text);
-  background: var(--bg4);
-}
-
-.nav-right {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
+/* Navigation styles removed to unify with mobile-style unified header */
 
 .btn-ghost {
   background: none;
@@ -307,10 +291,14 @@ nav {
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 820px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 140px 40px 80px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-badge {
@@ -352,12 +340,14 @@ nav {
 }
 
 .hero-title {
-  font-size: clamp(48px, 8vw, 84px);
+  font-size: clamp(64px, 12vw, 110px);
   font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -2.5px;
+  line-height: 0.95;
+  letter-spacing: -4px;
   color: #fff;
   margin-bottom: 28px;
+  text-align: center;
+  width: 100%;
 }
 
 .hero-title em {
@@ -369,10 +359,10 @@ nav {
 }
 
 .hero-sub {
-  font-size: 19px;
+  font-size: 24px;
   color: var(--text2);
   font-weight: 300;
-  max-width: 580px;
+  max-width: 700px;
   margin: 0 auto 52px;
   line-height: 1.6;
 }
@@ -543,12 +533,147 @@ nav {
 
   .hero-stats {
     flex-wrap: wrap;
+    background: var(--bg2);
   }
 
   .hero-stat {
     border-right: none;
     border-bottom: 1px solid var(--border);
     min-width: 50%;
+    padding: 24px 16px;
+  }
+}
+
+/* ── MOBILE NAV ── */
+.menu-toggle {
+    display: flex;
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 200;
+}
+
+.menu-toggle:hover {
+    background: var(--bg3);
+    border-color: var(--accent);
+}
+
+.nav-links-wrap {
+    position: fixed;
+    top: 0;
+    right: -320px; /* Start off-screen */
+    width: 320px;
+    height: 100vh;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 150;
+    padding: 80px 40px;
+    border-left: 1px solid var(--border);
+    box-shadow: -10px 0 40px rgba(0,0,0,0.5);
+}
+
+.nav-links-wrap.active {
+    right: 0;
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 20px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.nav-right {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px; /* Limit width on desktop sidebar */
+    gap: 12px;
+    align-items: center;
+}
+
+.nav-right button {
+    width: 100%;
+}
+
+@media (max-width: 900px) {
+  /* Hero Optimization */
+  .hero-content {
+    padding: 100px 20px 60px;
+  }
+
+  .hero-title {
+    font-size: 42px;
+    letter-spacing: -1.5px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    margin-bottom: 40px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-hero,
+  .btn-hero-outline {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-stat {
+      min-width: 100%;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .service-options {
+    grid-template-columns: 1fr;
+  }
+
+  .request-form {
+    padding: 32px 24px;
+  }
+
+  /* Section Spacing — usando especificidade ao invés de !important */
+  .section > div {
+    padding-top: 60px;
+    padding-bottom: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 
@@ -568,18 +693,18 @@ nav {
 }
 
 .section-title {
-  font-size: clamp(36px, 5vw, 56px);
+  font-size: clamp(50px, 8vw, 82px);
   font-weight: 800;
-  letter-spacing: -1.5px;
+  letter-spacing: -2.5px;
   color: #fff;
-  line-height: 1.1;
+  line-height: 1.0;
   margin-bottom: 20px;
 }
 
 .section-sub {
-  font-size: 17px;
+  font-size: 21px;
   color: var(--text2);
-  max-width: 560px;
+  max-width: 680px;
   margin: 0 auto;
   line-height: 1.6;
 }
@@ -592,13 +717,15 @@ nav {
   gap: 20px;
 }
 
-.service-card {
+/* Service & Member cards — definição única consolidada */
+.service-card,
+.member-card {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 48px 32px;
   cursor: pointer;
-  transition: transform 0.1s ease-out, background 0.3s, border-color 0.3s, box-shadow 0.3s;
+  transition: transform 0.08s ease-out, background 0.2s, border-color 0.2s, box-shadow 0.2s;
   position: relative;
   overflow: hidden;
   text-align: center;
@@ -621,19 +748,30 @@ nav {
   opacity: 1;
 }
 
-.service-card,
-.member-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 48px 32px;
-  cursor: pointer;
-  transition: transform 0.08s ease-out, background 0.2s, border-color 0.2s, box-shadow 0.2s;
-  position: relative;
-  overflow: hidden;
-  text-align: center;
-  transform-style: preserve-3d;
-  perspective: 1000px;
+/* ── TASK CARD UTILITY CLASSES ── */
+.task-payment-value {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  font-size: 16px;
+  color: var(--green);
+  font-weight: 800;
+  display: inline-block;
+}
+
+.task-card-edital {
+  font-size: 12px;
+  color: var(--text2);
+  margin: 12px 0;
+  line-height: 1.4;
+}
+
+.task-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .service-card::before {
@@ -877,6 +1015,21 @@ nav {
   margin: 0 auto;
 }
 
+/* Classes para substituir inline styles críticos */
+.request-header {
+  margin-top: 40px;
+}
+
+.about-differential {
+  max-width: 900px;
+  margin: 100px auto 0;
+  padding: 48px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
 .request-form {
   background: var(--bg2);
   border: 1px solid var(--border);
@@ -937,6 +1090,27 @@ nav {
 .form-group textarea {
   resize: vertical;
   min-height: 120px;
+}
+
+/* Approval Modal Grid */
+.approval-form-grid {
+  margin-top: 10px;
+}
+
+.approval-form-grid .form-group label {
+  font-size: 11px;
+  color: var(--accent2);
+  letter-spacing: 0.5px;
+}
+
+.approval-form-grid input {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.approval-form-grid input:focus {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent2);
 }
 
 .service-options {
@@ -1360,7 +1534,7 @@ table td:first-child {
 
 .admin-metrics {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
   margin-bottom: 32px;
 }
@@ -1397,8 +1571,14 @@ table td:first-child {
 
 .admin-panels {
   display: grid;
-  grid-template-columns: 1fr 380px;
+  grid-template-columns: 1fr 350px;
   gap: 24px;
+}
+
+@media (max-width: 1400px) {
+    .admin-panels {
+        grid-template-columns: 1fr;
+    }
 }
 
 .pill {
@@ -1473,10 +1653,11 @@ table td:first-child {
 /* ── FOOTER ── */
 footer {
   border-top: 1px solid var(--border);
-  padding: 64px 40px;
-  display: grid;
+  padding: 32px 40px;
   grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  display: grid;
   gap: 64px;
+  margin-top: auto;
 }
 
 .footer-brand .nav-logo {
@@ -1567,8 +1748,8 @@ footer {
 
 .animate-hidden {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(15px); /* Subtler displacement */
+  transition: opacity 1.0s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.0s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .animate-show {
@@ -1784,9 +1965,9 @@ footer {
   top: -5px;
   width: 80px;
   height: 80px;
-  object-fit: contain; /* Ajustado para imagens individuais */
-  opacity: 0.15;
-  filter: grayscale(1) invert(1) brightness(2);
+  object-fit: contain;
+  opacity: 0.3;
+  filter: grayscale(0.5) brightness(1.5);
   transition: all 0.5s;
   pointer-events: none;
 }
@@ -2039,4 +2220,951 @@ footer {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── MODAL SYSTEM ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  padding: 0; /* Remove padding here to keep header fixed if needed, or keep it simple */
+}
+
+/* Custom Scrollbar for Modals */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+.modal-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: var(--bg2);
+  z-index: 10;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: #fff;
+}
+
+.modal-body {
+    padding: 32px;
+}
+
+/* ── COLABORADOR PORTAL ── */
+.col-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+}
+
+.col-header h4 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 200px;
+}
+
+.task-card {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.task-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.task-card-title {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.task-card-meta {
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.task-card-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.task-card-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.stack-tag {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--accent2);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.task-card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+.dash-welcome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(90deg, rgba(91, 106, 247, 0.1), transparent);
+    padding: 24px 32px;
+    border-radius: 16px;
+    border-left: 4px solid var(--accent);
+}
+
+/* ── ADMIN HEADER & CHAT ── */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+}
+
+.admin-logo i {
+    width: 24px;
+    height: 24px;
+}
+
+.admin-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* CHAT MODAL */
+.chat-modal {
+    max-width: 500px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.chat-msg {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.chat-msg.admin {
+    align-self: flex-start;
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.chat-msg.colab {
+    align-self: flex-end;
+    background: var(--accent);
+    color: #fff;
+}
+
+.chat-msg .time {
+    display: block;
+    font-size: 10px;
+    opacity: 0.6;
+    margin-top: 4px;
+}
+
+.chat-input-wrap {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input-wrap input {
+    flex: 1;
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 8px;
+    outline: none;
+}
+
+.chat-input-wrap input:focus {
+    border-color: var(--accent);
+}
+
+/* UPDATE PROGRESS */
+#rangeVal {
+    display: inline-block;
+    margin-top: 8px;
+    font-weight: 600;
+    color: var(--green);
+}
+
+.update-badge {
+    background: rgba(16,185,129,0.1);
+    color: var(--green);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-top: 4px;
+    display: inline-block;
+}
+
+/* ── CLIENT TABS ── */
+.client-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+}
+
+.client-tab {
+    background: transparent;
+    border: none;
+    color: var(--text3);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.client-tab:hover {
+    color: var(--text2);
+    background: rgba(255,255,255,0.02);
+}
+
+.client-tab.active {
+    color: #fff;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+}
+
+/* ── CLIENT SUPPORT VIEW ── */
+.support-greeting-card {
+    background: linear-gradient(135deg, rgba(91, 106, 247, 0.05), rgba(0, 242, 255, 0.05));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+.support-avatar-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.twozinho-floating {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: floatAnim 4s ease-in-out infinite;
+    filter: drop-shadow(0 10px 20px rgba(139, 92, 246, 0.4));
+}
+
+@keyframes floatAnim {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(2deg); }
+}
+
+.support-bubble {
+    position: absolute;
+    top: 10px;
+    left: 130px; /* Position to the right of the avatar */
+    background: rgba(20, 20, 28, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    border-top: 1px solid rgba(139, 92, 246, 0.6);
+    padding: 16px 24px;
+    border-radius: 20px;
+    border-bottom-left-radius: 4px; /* Makes it look like a speech bubble */
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    white-space: nowrap;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 20px rgba(139, 92, 246, 0.1);
+    z-index: 2;
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+    letter-spacing: 0.3px;
+}
+
+.support-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: -12px;
+    border-width: 0 12px 16px 0;
+    border-style: solid;
+    border-color: transparent rgba(20, 20, 28, 0.75) transparent transparent;
+    filter: drop-shadow(-1px 1px 1px rgba(0, 242, 255, 0.3));
+}
+
+.pop-in {
+    animation: popInAnim 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+    transform: scale(0.5);
+    transform-origin: bottom left;
+}
+
+@keyframes popInAnim {
+    to { opacity: 1; transform: scale(1); }
+}
+
+.support-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+@media (max-width: 800px) {
+    .support-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.support-form-card, .support-history-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+
+.support-form-card h4, .support-history-card h4 {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 12px;
+}
+
+.ticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.ticket-list::-webkit-scrollbar { width: 4px; }
+.ticket-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.ticket-item {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.3s;
+}
+
+.ticket-item:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(139, 92, 246, 0.3);
+    transform: translateX(4px);
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.ticket-subject {
+    font-weight: 700;
+    color: #fff;
+    font-size: 14px;
+}
+
+.ticket-meta {
+    font-size: 12px;
+    color: var(--text3);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Holographic Text Effect */
+.holographic-text-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.holographic-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(
+        to right,
+        #4facfe 0%,
+        #00f2fe 25%,
+        #a78bfa 50%,
+        #fbc2eb 75%,
+        #4facfe 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: holoGradient 5s linear infinite;
+    position: relative;
+    z-index: 1;
+    letter-spacing: -0.5px;
+}
+
+.holographic-title::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(14px);
+    background: inherit;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.6;
+    animation: holoPulse 2s infinite alternate ease-in-out;
+}
+
+@keyframes holoGradient {
+    to { background-position: 200% center; }
+}
+
+@keyframes holoPulse {
+    0% { opacity: 0.4; filter: blur(10px); transform: scale(1); }
+    100% { opacity: 0.8; filter: blur(16px); transform: scale(1.02); }
+}
+
+/* ═══════════════════════════════════════════════════
+   ADMIN TAB SYSTEM
+═══════════════════════════════════════════════════ */
+.admin-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    font-size: 13.5px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.admin-tab-btn:hover {
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    border-color: var(--border2);
+}
+
+.admin-tab-btn.active {
+    background: linear-gradient(135deg, rgba(91,106,247,0.15), rgba(139,92,246,0.15));
+    border-color: rgba(139,92,246,0.4);
+    color: #fff;
+    box-shadow: 0 0 16px rgba(139,92,246,0.2);
+}
+
+.admin-tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    background: var(--red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 0 5px;
+    margin-left: 8px;
+    position: relative;
+    animation: pulseBadge 2s infinite;
+}
+
+/* ═══════════════════════════════════════════════════
+   ADMIN SUPPORT VIEW
+═══════════════════════════════════════════════════ */
+.admin-support-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 16px;
+    min-height: 520px;
+}
+
+.admin-support-list-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 520px;
+}
+
+.admin-support-chat-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 520px;
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.admin-support-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    flex-shrink: 0;
+}
+
+.admin-status-select {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    outline: none;
+}
+
+.admin-support-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+}
+
+.admin-support-messages::-webkit-scrollbar { width: 4px; }
+.admin-support-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.admin-support-input-wrap {
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    flex-shrink: 0;
+}
+
+.admin-support-input-wrap input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.admin-support-input-wrap input:focus {
+    border-color: var(--accent2);
+}
+
+/* Support Chat Messages (admin view) */
+.support-chat-msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 80%;
+}
+
+.support-chat-msg.client { align-self: flex-start; }
+.support-chat-msg.admin  { align-self: flex-end; }
+
+.support-chat-bubble {
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.support-chat-msg.client .support-chat-bubble {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 12px 12px 12px 4px;
+}
+
+.support-chat-msg.admin .support-chat-bubble {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border-radius: 12px 12px 4px 12px;
+}
+
+.support-chat-time {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 4px;
+    padding: 0 4px;
+}
+
+.support-chat-msg.admin .support-chat-time { text-align: right; }
+
+/* Ticket list items */
+.admin-ticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    flex: 1;
+    max-height: 400px;
+}
+
+.admin-ticket-list::-webkit-scrollbar { width: 4px; }
+.admin-ticket-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.admin-ticket-item {
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.admin-ticket-item:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(139,92,246,0.3);
+    transform: translateX(4px);
+}
+
+.admin-ticket-item.selected {
+    background: rgba(91,106,247,0.1);
+    border-color: rgba(91,106,247,0.4);
+    box-shadow: 0 0 12px rgba(91,106,247,0.15);
+}
+
+.admin-ticket-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.admin-ticket-subject {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #fff;
+    flex: 1;
+}
+
+.admin-ticket-item-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text3);
+}
+
+.admin-ticket-chat-count {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--accent2);
+    background: rgba(139,92,246,0.1);
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(139,92,246,0.2);
+}
+
+/* Filter buttons */
+.admin-filter-btn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text3);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.admin-filter-btn:hover { color: var(--text2); border-color: var(--border2); }
+.admin-filter-btn.active {
+    background: rgba(139,92,246,0.15);
+    border-color: rgba(139,92,246,0.4);
+    color: #a78bfa;
+}
+
+/* Ticket admin reply preview (client view) */
+.ticket-admin-reply {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(91,106,247,0.08);
+    border: 1px solid rgba(91,106,247,0.2);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════
+   ADMIN EQUIPE VIEW
+═══════════════════════════════════════════════════ */
+.admin-equipe-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.admin-equipe-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: all 0.3s;
+}
+
+.admin-equipe-card:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(139,92,246,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.admin-equipe-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(91,106,247,0.2), rgba(139,92,246,0.2));
+    border: 1px solid rgba(139,92,246,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.admin-equipe-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-equipe-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+}
+
+.admin-equipe-role {
+    font-size: 12px;
+    color: var(--accent2);
+    margin-top: 2px;
+}
+
+.admin-equipe-last-msg {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ═══════════════════════════════════════════════════
+   COLLABORATOR CHAT TRIGGER BUTTON
+═══════════════════════════════════════════════════ */
+.colab-chat-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 13.5px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    box-shadow: 0 4px 14px rgba(91,106,247,0.3);
+}
+
+.colab-chat-trigger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(91,106,247,0.5);
+}
+
+.colab-chat-unread {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 50%;
+    animation: pulseBadge 1.5s infinite;
+}
+
+/* ═══════════════════════════════════════════════════
+   SHARED CHAT MODAL — MESSAGE STYLES
+   (colab ↔ admin chat uses .chat-msg already defined;
+    we extend here for .colab sender type)
+═══════════════════════════════════════════════════ */
+.chat-msg.colab {
+    align-self: flex-end;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border-radius: 16px 16px 4px 16px;
+}
+
+.chat-msg.colab .time {
+    color: rgba(255,255,255,0.65);
+}
+
+/* Info bar inside modal */
+.colab-chat-info-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(91,106,247,0.07);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text3);
+    flex-shrink: 0;
 }
