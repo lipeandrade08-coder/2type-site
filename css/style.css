@@ -293,7 +293,7 @@ nav {
   z-index: 2;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 140px 40px 80px;
+  padding: clamp(100px, 14vw, 160px) clamp(16px, 5vw, 60px) 60px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -340,10 +340,10 @@ nav {
 }
 
 .hero-title {
-  font-size: clamp(64px, 12vw, 110px);
+  font-size: clamp(38px, 9vw, 110px);
   font-weight: 800;
   line-height: 0.95;
-  letter-spacing: -4px;
+  letter-spacing: clamp(-1.5px, -0.3vw, -4px);
   color: #fff;
   margin-bottom: 28px;
   text-align: center;
@@ -417,8 +417,11 @@ nav {
 .hero-stats {
   display: flex;
   justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
   gap: 0;
   margin-top: 60px;
+  width: 100%;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background: rgba(10, 10, 10, 0.4);
@@ -426,8 +429,8 @@ nav {
 }
 
 .hero-stat {
-  flex: 1;
-  max-width: 250px;
+  flex: 1 1 25%;
+  min-width: 0;
   padding: 36px 20px;
   text-align: center;
   border-right: 1px solid var(--border);
@@ -495,12 +498,14 @@ nav {
 }
 
 .feature-icon i,
-.feature-icon svg {
+.feature-icon svg,
+.service-icon i,
+.service-icon svg {
   width: 32px;
   height: 32px;
   stroke: currentColor;
-  stroke-width: 2px;
-  filter: url(#hand-drawn-filter) drop-shadow(0 0 4px rgba(139, 92, 246, 0.5));
+  stroke-width: 1.8px;
+  filter: url(#hand-drawn-filter) drop-shadow(0 0 5px rgba(139, 92, 246, 0.6));
 }
 
 .feature-icon svg path {
@@ -534,13 +539,26 @@ nav {
   .hero-stats {
     flex-wrap: wrap;
     background: var(--bg2);
+    justify-content: center;
+    width: 100%;
   }
 
   .hero-stat {
+    flex: 1 1 50%;
+    min-width: 0;
     border-right: none;
     border-bottom: 1px solid var(--border);
-    min-width: 50%;
     padding: 24px 16px;
+    text-align: center;
+  }
+
+  .hero-stat:nth-child(odd) {
+    border-right: 1px solid var(--border);
+  }
+
+  .hero-stat:last-child,
+  .hero-stat:nth-last-child(2):nth-child(odd) {
+    border-bottom: none;
   }
 }
 
