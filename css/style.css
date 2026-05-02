@@ -1830,7 +1830,7 @@ footer {
 footer {
   background: #080808; /* Tom mais profundo para harmonia premium */
   border-top: 1px solid rgba(255, 255, 255, 0.03);
-  padding: 100px 40px 0;
+  padding: 50px 40px 0;
   margin-top: 0;
   position: relative;
   z-index: 100;
@@ -1842,7 +1842,7 @@ footer {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr 0.8fr 1.3fr 0.9fr; /* Aumentado espaço para Contato Direto */
   gap: 32px;
-  padding-bottom: 60px;
+  padding-bottom: 30px;
 }
 
 .footer-brand p {
