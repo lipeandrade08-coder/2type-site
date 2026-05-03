@@ -2,7 +2,7 @@ import './globals.css'
 
 export const metadata = {
   title: '2Type Admin Panel',
-  description: 'Painel Administrativo — 2Type | TwoType',
+  description: 'Painel Administrativo — 2Type',
 }
 
 export default function RootLayout({ children }) {

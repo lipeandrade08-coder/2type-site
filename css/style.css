@@ -1351,6 +1351,21 @@ nav {
   margin-bottom: 6px;
 }
 
+/* Modal Fixes */
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent2) var(--bg3);
+}
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--accent2);
+  border-radius: 10px;
+}
+
 .dash-welcome-text p {
   font-size: 14px;
   color: var(--text2);

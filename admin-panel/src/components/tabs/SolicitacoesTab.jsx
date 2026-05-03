@@ -15,7 +15,7 @@ export default function SolicitacoesTab({ solicitacoes, onAdd, onApprove, role, 
   const [showModal, setShowModal] = useState(false)
   const [selected, setSelected] = useState(null)
   const [form, setForm] = useState({ name: '', email: '', company: '', serviceType: '', details: '', budget: '', deadline: '', phone: '' })
-  const [approveForm, setApproveForm] = useState({ clientDeadline: '', devDeadline: '', attachment: null, techDetails: '' })
+  const [approveForm, setApproveForm] = useState({ clientDeadline: '', devDeadline: '', attachment: null, techDetails: '', paymentValue: '' })
 
   const handleSubmit = () => {
     if (!form.name || !form.serviceType) return alert('Preencha nome e tipo de serviço.')
@@ -42,8 +42,8 @@ export default function SolicitacoesTab({ solicitacoes, onAdd, onApprove, role, 
 
   const handleApprove = (e, id) => {
     e.stopPropagation()
-    if (!approveForm.clientDeadline || !approveForm.devDeadline) {
-      return alert('Preencha os prazos para o cliente e para o dev antes de aprovar.')
+    if (!approveForm.clientDeadline || !approveForm.devDeadline || !approveForm.paymentValue) {
+      return alert('Preencha os prazos e o valor de repasse para o dev antes de aprovar.')
     }
     onApprove(id, approveForm)
     setSelected(null)
@@ -87,7 +87,7 @@ export default function SolicitacoesTab({ solicitacoes, onAdd, onApprove, role, 
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {pendentes.map((s, i) => (
-              <div key={i} className="glass-card p-5" style={{ borderColor: 'rgba(245,158,11,0.2)', cursor: 'pointer' }} onClick={() => { setSelected(selected?.id === s.id ? null : s); setApproveForm({ clientDeadline: '', devDeadline: '', attachment: null, techDetails: '' }) }}>
+              <div key={i} className="glass-card p-5" style={{ borderColor: 'rgba(245,158,11,0.2)', cursor: 'pointer' }} onClick={() => { setSelected(selected?.id === s.id ? null : s); setApproveForm({ clientDeadline: '', devDeadline: '', attachment: null, techDetails: '', paymentValue: '' }) }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: selected?.id === s.id ? 16 : 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#fbbf24', boxShadow: '0 0 8px #fbbf24', flexShrink: 0 }} className="badge-pulse" />
@@ -129,6 +129,27 @@ export default function SolicitacoesTab({ solicitacoes, onAdd, onApprove, role, 
                     <div style={{ marginBottom: 16 }}>
                       <FormField label="Detalhes Técnicos para o Desenvolvedor (Opcional)">
                         <textarea className="glass-input" rows={3} placeholder="Instruções técnicas, arquitetura, dependências..." value={approveForm.techDetails} onChange={e => setApproveForm(p => ({ ...p, techDetails: e.target.value }))} style={{ resize: 'vertical' }} />
+                      </FormField>
+                    </div>
+                    
+                    <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.2)', marginBottom: 20 }}>
+                      <FormField label="Valor de Repasse para o Colaborador (R$) *">
+                         <div style={{ position: 'relative' }}>
+                            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#10b981', fontWeight: 700 }}>R$</span>
+                            <input 
+                              className="glass-input" 
+                              style={{ paddingLeft: 40, color: '#10b981', fontWeight: 800, fontSize: 18 }} 
+                              placeholder="0,00" 
+                              value={approveForm.paymentValue} 
+                              onChange={e => {
+                                let val = e.target.value.replace(/\D/g, '');
+                                if (val) {
+                                  val = (parseInt(val) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                                }
+                                setApproveForm(p => ({ ...p, paymentValue: val }));
+                              }} 
+                            />
+                         </div>
                       </FormField>
                     </div>
                     <div style={{ marginBottom: 24 }}>

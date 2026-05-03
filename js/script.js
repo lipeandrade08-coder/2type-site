@@ -1,10 +1,14 @@
 // ── GLOBALS ──
 let serviceRequests = [];
-try { serviceRequests = JSON.parse(localStorage.getItem('nexcore_requests') || '[]'); if (!Array.isArray(serviceRequests)) serviceRequests = []; } catch (e) { serviceRequests = []; }
+try { 
+    serviceRequests = JSON.parse(localStorage.getItem('nexcore_requests') || '[]'); 
+    if (!Array.isArray(serviceRequests)) serviceRequests = []; 
+} catch (e) { 
+    serviceRequests = []; 
+}
 
-// Wipe if we detect bad/corrupted data from previous testing
-const hasCorruptedData = serviceRequests.some(r => r.name === 'Visitante' && r.serviceType === 'Consultoria');
-if (serviceRequests.length === 0 || hasCorruptedData) {
+// Initial demo data if empty
+if (serviceRequests.length === 0) {
     serviceRequests = [
         {
             id: Date.now() - 100000,
@@ -18,101 +22,12 @@ if (serviceRequests.length === 0 || hasCorruptedData) {
             details: 'Sistema de gestão de insumos on-premise com sincronização em nuvem e painel gerencial.',
             status: 'novo',
             progress: 0,
-            date: new Date(Date.now() - 86400000 * 2).toLocaleDateString('pt-BR'),
+            date: new Date().toLocaleDateString('pt-BR'),
+            history: [],
             techStack: '',
             edital: '',
-            serviceDeadline: '',
-            lastUpdate: '',
             messages: [],
             assignedTo: null
-        },
-        {
-            id: Date.now() - 200000,
-            name: 'Carlos Almeida',
-            email: 'carlos@startup.com',
-            company: 'EduTech Online',
-            phone: '(11) 97777-7777',
-            serviceType: '🌐 Web & Plataforma',
-            deadline: 'Curto prazo (1 a 3 meses)',
-            budget: 'R$ 15.000 – R$ 50.000',
-            details: 'Nova plataforma EAD com vídeos na AWS, sistema de pagamentos e gamificação para alunos.',
-            status: 'novo',
-            progress: 0,
-            date: new Date(Date.now() - 86400000 * 5).toLocaleDateString('pt-BR'),
-            techStack: '',
-            edital: '',
-            deadlineCliente: '',
-            deadlineColab: '',
-            paymentValue: '',
-            lastUpdate: '',
-            messages: [],
-            assignedTo: null
-        },
-        {
-            id: Date.now() - 300000,
-            name: 'Logística Express',
-            email: 'contato@logexpress.com',
-            company: 'Logística Express',
-            phone: '(21) 96666-6666',
-            serviceType: '📱 Aplicativo Mobile',
-            deadline: 'Curto prazo (1 a 3 meses)',
-            budget: 'R$ 50.000 – R$ 100.000',
-            details: 'App de rastreamento cross-platform para motoristas, com offline-first.',
-            status: 'aprovado',
-            progress: 0,
-            date: new Date(Date.now() - 86400000 * 10).toLocaleDateString('pt-BR'),
-            techStack: 'React Native, Node.js',
-            edital: 'App mobile híbrido para rastreio e confirmação de entrega via geolocalização.',
-            deadlineCliente: '15/08/2025',
-            deadlineColab: '01/08/2025',
-            paymentValue: 35000,
-            lastUpdate: 'Aprovado pelo cliente. Aguardando dev.',
-            messages: [],
-            assignedTo: null
-        },
-        {
-            id: Date.now() - 400000,
-            name: 'Fintech Alpha',
-            email: 'tech@fintechalpha.com',
-            company: 'Fintech Alpha',
-            phone: '(11) 95555-5555',
-            serviceType: '🔌 API / Integração',
-            deadline: 'Médio prazo (3 a 6 meses)',
-            budget: 'Acima de R$ 100.000',
-            details: 'Core Banking API, documentação e portal do desenvolvedor.',
-            status: 'execucao',
-            progress: 65,
-            date: new Date(Date.now() - 86400000 * 30).toLocaleDateString('pt-BR'),
-            techStack: '.NET Core, PostgreSQL, AWS',
-            edital: 'Refatoração da arquitetura e desenvolvimento de novas APIs para transações financeiras.',
-            deadlineCliente: '10/10/2025',
-            deadlineColab: '20/09/2025',
-            paymentValue: 120000,
-            lastUpdate: 'Endpoints de pagamentos concluídos. Iniciando testes.',
-            messages: [],
-            assignedTo: 'Colaborador'
-        },
-        {
-            id: Date.now() - 500000,
-            name: 'B2B SaaS Inc',
-            email: 'ceo@b2bsaas.com',
-            company: 'B2B SaaS',
-            phone: '(41) 94444-4444',
-            serviceType: '💡 Consultoria / Outro',
-            deadline: 'Urgente (menos de 1 mês)',
-            budget: 'R$ 15.000 – R$ 50.000',
-            details: 'Dashboards gerenciais Metabase integrados ao software atual.',
-            status: 'concluido',
-            progress: 100,
-            date: new Date(Date.now() - 86400000 * 45).toLocaleDateString('pt-BR'),
-            techStack: 'Metabase, SQL, Docker',
-            edital: 'Implementação de BI com Metabase e relatórios gerenciais.',
-            deadlineCliente: '10/02/2025',
-            deadlineColab: '05/02/2025',
-            paymentValue: 18000,
-            lastUpdate: 'Implantado no ambiente de produção com sucesso.',
-            messages: [],
-            assignedTo: 'Colaborador'
         }
     ];
     saveToStorage('nexcore_requests', serviceRequests);
@@ -126,6 +41,11 @@ let currentApproveId = null;
 let currentChatId = null;
 let currentUpdateId = null;
 let currentDetailsId = null;
+
+// COLAB GLOBALS
+let colabSessionInterval = null;
+let currentActiveSession = null; // { reqId, startTime }
+let approveTasksTemp = [];
 
 // ── HELPERS ──
 
@@ -170,7 +90,7 @@ function getRequests() {
  * Mapeia um status para um label de exibição.
  */
 function getDisplayStatus(status) {
-    const map = { novo: 'Análise', aprovado: 'Aguardando Dev', execucao: 'Em Dev', concluido: 'Concluído' };
+    const map = { novo: 'Análise', aprovado: 'Aguardando Dev', execucao: 'Em Dev', pendente_aprovacao: 'Revisão Final', concluido: 'Concluído' };
     return map[status] || status;
 }
 
@@ -178,7 +98,7 @@ function getDisplayStatus(status) {
  * Mapeia um status para uma classe CSS de badge.
  */
 function getStatusClass(status) {
-    const map = { novo: 'badge-pending', aprovado: 'badge-review', execucao: 'badge-active', concluido: 'badge-active' };
+    const map = { novo: 'badge-pending', aprovado: 'badge-review', execucao: 'badge-active', pendente_aprovacao: 'badge-active', concluido: 'badge-active' };
     return map[status] || 'badge-pending';
 }
 
@@ -233,7 +153,11 @@ function selectOption(el) {
 }
 
 // Emulate Submission Validation
+let isSubmitting = false;
 function submitRequest() {
+    if (isSubmitting) return;
+    isSubmitting = true;
+    setTimeout(() => { isSubmitting = false; }, 3000);
     const name = document.getElementById('req_name').value || 'Visitante';
     const email = document.getElementById('req_email').value || 'seu e-mail';
     const company = document.getElementById('req_company').value || '-';
@@ -308,6 +232,7 @@ function resetRequestForm() {
 // ── DASHBOARD SUB-FUNCTIONS ──
 
 function updateClientTable(requests, clientList) {
+    if (clientList) clientList.innerHTML = '';
     requests.forEach(req => {
         const clientRow = document.createElement('tr');
         clientRow.className = 'simulated-row';
@@ -336,33 +261,90 @@ function updateClientTable(requests, clientList) {
 }
 
 function updateAdminRoadmap(requests, adminRoadmapList) {
+    if (adminRoadmapList) adminRoadmapList.innerHTML = '';
     requests.forEach(req => {
         if (req.status === 'novo') return;
         const adminRow = document.createElement('tr');
         adminRow.className = 'simulated-row';
         const displayStatus = getDisplayStatus(req.status);
         const statusClass = getStatusClass(req.status);
+        
+        // SLA Logic
+        let slaBadge = '';
+        let showCobrar = false;
+        if (req.status === 'execucao' && req.deadlineColab) {
+            const parts = req.deadlineColab.split('/');
+            if (parts.length === 3) {
+                const dlDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                const now = new Date();
+                const diffDays = Math.ceil((dlDate - now) / (1000 * 60 * 60 * 24));
+                if (diffDays < 0) {
+                    slaBadge = `<span class="pill" style="background:var(--red); color:#fff; font-size:9px; margin-left:6px">ATRASADO</span>`;
+                    showCobrar = true;
+                } else if (diffDays <= 2) {
+                    slaBadge = `<span class="pill" style="background:var(--amber); color:#000; font-size:9px; margin-left:6px">URGENTE</span>`;
+                }
+            }
+        }
+
         const chatBtn = (req.assignedTo || req.status === 'execucao')
             ? `<button class="action-btn" style="background:var(--accent2); color:#fff; border-color:var(--accent2)" onclick="openChat(${req.id})">Chat Dev</button>`
             : '';
+        
+        const cobrarBtn = showCobrar 
+            ? `<button class="action-btn" style="background:var(--red); color:#fff; border-color:var(--red)" onclick="nudgeCollaborator(${req.id})"><i data-lucide="bell" style="width:12px; vertical-align:-2px"></i> Cobrar</button>`
+            : '';
+
         const lastUpdateAdmin = req.lastUpdate
             ? `<div class="update-badge" style="font-size:9px; margin-top:4px">Att: ${escapeHtml(req.lastUpdate)}</div>`
             : '';
+
+        const paymentHtml = req.paymentValue 
+            ? `<div style="font-weight:700; color:var(--green); font-size:11px">R$ ${parseFloat(req.paymentValue).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>`
+            : '<span style="color:var(--text3); font-size:10px">Pendente</span>';
+
         adminRow.innerHTML = `
             <td>
                 ${escapeHtml(req.name)} (${escapeHtml(req.company)})
                 ${lastUpdateAdmin}
             </td>
             <td>${escapeHtml(req.serviceType)}</td>
-            <td><span class="status-badge ${statusClass}" style="font-size:10px"><span class="status-dot"></span>${displayStatus}</span></td>
+            <td>${paymentHtml}</td>
+            <td>
+                <span class="status-badge ${statusClass}" style="font-size:10px"><span class="status-dot"></span>${displayStatus}</span>
+                ${slaBadge}
+            </td>
             <td style="color:var(--text3)">${escapeHtml(req.assignedTo || 'Pendente')}</td>
-            <td style="display:flex; gap:6px">${chatBtn} <button class="action-btn" onclick="openDetailsModal(${req.id})">Detalhes</button></td>
+            <td style="display:flex; gap:6px">
+                ${chatBtn} 
+                ${cobrarBtn}
+                <button class="action-btn" onclick="openDetailsModal(${req.id})">Detalhes</button>
+            </td>
         `;
         adminRoadmapList.prepend(adminRow);
     });
 }
 
+function nudgeCollaborator(id) {
+    const req = serviceRequests.find(r => r.id === id);
+    if (!req) return;
+    
+    // Add automated message to chat
+    const msg = {
+        sender: 'Admin',
+        text: `⚠️ ALERTA DE SLA: O prazo para o projeto "${req.serviceType}" (${req.name}) expirou. Por favor, envie uma atualização de status agora.`,
+        date: new Date().toISOString()
+    };
+    
+    req.chat = req.chat || [];
+    req.chat.push(msg);
+    saveToStorage('nexcore_requests', serviceRequests);
+    alert(`Cobrança enviada para o chat do projeto #${id}.`);
+    updateDashboards();
+}
+
 function updateAdminInbox(requests, adminInboxList) {
+    if (adminInboxList) adminInboxList.innerHTML = '';
     requests.forEach(req => {
         if (req.status !== 'novo') return;
         const inboxItem = document.createElement('div');
@@ -379,25 +361,388 @@ function updateAdminInbox(requests, adminInboxList) {
     });
 }
 
+function updateAdminReviewList(requests) {
+    const reviewList = document.getElementById('adminReviewList');
+    const reviewCount = document.getElementById('adminReviewCount');
+    if(!reviewList) return;
+    
+    reviewList.innerHTML = '';
+    let count = 0;
+    
+    requests.forEach(req => {
+        if(req.status === 'pendente_aprovacao') {
+            count++;
+            reviewList.innerHTML += `
+                <div class="simulated-row" style="background:rgba(255,255,255,0.02); padding:12px; border-radius:8px; border-left:3px solid var(--accent2); display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-weight:600; font-size:13px; color:#fff;">${escapeHtml(req.name)} - ${escapeHtml(req.serviceType)}</div>
+                        <div style="font-size:11px; color:var(--text3); margin-top:2px;">Entregue por: ${escapeHtml(req.assignedTo || 'Colaborador')}</div>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn-primary btn-sm" style="background:var(--green); padding:6px 12px;" onclick="approveDelivery(${req.id})"><i data-lucide="check" style="width:14px; margin-right:4px;"></i> Aprovar</button>
+                        <button class="btn-primary btn-sm" style="background:var(--red); padding:6px 12px;" onclick="openRejectModal(${req.id})"><i data-lucide="x" style="width:14px; margin-right:4px;"></i> Reprovar</button>
+                    </div>
+                </div>
+            `;
+        }
+    });
+    
+    if(count === 0) {
+        reviewList.innerHTML = '<div class="empty-state" style="padding:16px;text-align:center;color:var(--text3);font-size:13px;">Nenhuma entrega pendente de revisão.</div>';
+    }
+    if(reviewCount) reviewCount.textContent = count;
+    if (typeof lucide !== 'undefined') setTimeout(() => lucide.createIcons(), 0);
+}
+
+function updateColabStatus(val) {
+    if(!currentColab) return;
+    localStorage.setItem(`nexcore_colab_status_${currentColab.email}`, val);
+    logColabActivity(`Alterou status de disponibilidade para: ${val}`);
+    if(typeof updateDashboards === 'function') updateDashboards();
+}
+
+function editColabMeta() {
+    if(!currentColab) return;
+    const current = localStorage.getItem(`nexcore_colab_meta_${currentColab.email}`) || '5000';
+    const newVal = prompt("Defina sua meta de faturamento mensal (R$):", current);
+    if(newVal !== null) {
+        const parsed = parseFloat(newVal.replace(/[^\d.,]/g, '').replace(',', '.'));
+        if(!isNaN(parsed)) {
+            localStorage.setItem(`nexcore_colab_meta_${currentColab.email}`, parsed);
+            updateColabMetrics();
+            alert("Meta atualizada com sucesso!");
+        } else {
+            alert("Valor inválido.");
+        }
+    }
+}
+
+function calculatePerformanceScore(colabEmail, colabName) {
+    const reqs = getRequests();
+    const feedbacks = JSON.parse(localStorage.getItem('nexcore_feedbacks') || '[]');
+    const myFeedbacks = feedbacks.filter(f => f.colabEmail === colabEmail);
+    
+    // Feedback Avg
+    let avgStars = 5;
+    if (myFeedbacks.length > 0) {
+        avgStars = myFeedbacks.reduce((sum, f) => sum + f.stars, 0) / myFeedbacks.length;
+    }
+
+    let deliveriesTotal = 0;
+    let approvedWithoutRejection = 0;
+    let deliveriesOnTime = 0;
+    const now = new Date();
+
+    reqs.forEach(req => {
+        const isAssigned = req.assignedTo === colabName || 
+                           (colabEmail === 'colaborador@twotype.com' && req.assignedTo === 'colaborador');
+        
+        if(isAssigned) {
+            if (req.status === 'concluido' || req.status === 'pendente_aprovacao') {
+                deliveriesTotal++;
+                
+                // On time check
+                if (req.deadlineColab) {
+                    const parts = req.deadlineColab.split('/');
+                    if (parts.length === 3) {
+                        const dl = new Date(parts[2], parts[1]-1, parts[0]);
+                        const historyDelivery = req.history?.find(h => h.text.includes('enviado para revisão'));
+                        const deliveryDate = historyDelivery ? new Date(historyDelivery.date) : now;
+                        if (deliveryDate <= dl) deliveriesOnTime++;
+                    } else deliveriesOnTime++;
+                } else deliveriesOnTime++;
+
+                // No rejection check
+                const hasRejection = req.history?.some(h => h.text.includes('Entrega REPROVADA'));
+                if (!hasRejection) approvedWithoutRejection++;
+            }
+        }
+    });
+
+    const feedbackScore = (avgStars / 5) * 40;
+    const approvalScore = deliveriesTotal > 0 ? (approvedWithoutRejection / deliveriesTotal) * 40 : 40;
+    const timeScore = deliveriesTotal > 0 ? (deliveriesOnTime / deliveriesTotal) * 20 : 20;
+    
+    return Math.round(feedbackScore + approvalScore + timeScore);
+}
+
+function updateColabMetrics() {
+    if (!currentColab) return;
+    const reqs = getRequests();
+    const feedbacks = JSON.parse(localStorage.getItem('nexcore_feedbacks') || '[]');
+    const myFeedbacks = feedbacks.filter(f => f.colabEmail === currentColab.email);
+    
+    let totalFat = 0;
+    let monthFat = 0;
+    let totalHoursMs = 0;
+    
+    // Performance Score components
+    let avgFeedbackStars = 5;
+    if (myFeedbacks.length > 0) {
+        avgFeedbackStars = myFeedbacks.reduce((sum, f) => sum + f.stars, 0) / myFeedbacks.length;
+    }
+
+    let deliveriesTotal = 0;
+    let approvedWithoutRejection = 0;
+    let deliveriesOnTime = 0;
+    
+    const now = new Date();
+    
+    reqs.forEach(req => {
+        if(req.assignedTo === currentColab.name) {
+            // faturamento (count completed projects)
+            if (req.status === 'concluido' && req.paymentValue) {
+                totalFat += parseFloat(req.paymentValue);
+                // Check if concluded this month
+                const historyConcluded = req.history?.find(h => h.text.includes('Projeto aprovado pelo Admin'));
+                if (historyConcluded) {
+                    const d = new Date(historyConcluded.date);
+                    if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
+                        monthFat += parseFloat(req.paymentValue);
+                    }
+                }
+            }
+
+            // hours
+            if(req.timeLog && req.timeLog[currentColab.email]) {
+                totalHoursMs += req.timeLog[currentColab.email].reduce((a,b)=>a+b.duration, 0);
+            }
+
+            // score components
+            if (req.status === 'concluido' || req.status === 'pendente_aprovacao') {
+                deliveriesTotal++;
+                
+                // On time check
+                if (req.deadlineColab) {
+                    const parts = req.deadlineColab.split('/');
+                    if (parts.length === 3) {
+                        const dl = new Date(parts[2], parts[1]-1, parts[0]);
+                        const historyDelivery = req.history?.find(h => h.text.includes('enviado para revisão'));
+                        const deliveryDate = historyDelivery ? new Date(historyDelivery.date) : now;
+                        if (deliveryDate <= dl) deliveriesOnTime++;
+                    } else {
+                        deliveriesOnTime++;
+                    }
+                } else {
+                    deliveriesOnTime++;
+                }
+
+                // Without rejection check
+                const hasRejection = req.history?.some(h => h.text.includes('Entrega REPROVADA'));
+                if (!hasRejection) approvedWithoutRejection++;
+            }
+        }
+    });
+
+    const hours = Math.floor(totalHoursMs / (1000*60*60));
+    
+    // Final score calculation (40/40/20 weight)
+    const feedbackScore = (avgFeedbackStars / 5) * 40;
+    const approvalScore = deliveriesTotal > 0 ? (approvedWithoutRejection / deliveriesTotal) * 40 : 40;
+    const timeScore = deliveriesTotal > 0 ? (deliveriesOnTime / deliveriesTotal) * 20 : 20;
+    
+    const finalScore = Math.round(feedbackScore + approvalScore + timeScore);
+
+    const meta = parseFloat(localStorage.getItem(`nexcore_colab_meta_${currentColab.email}`) || '5000');
+    
+    if(document.getElementById('colabMetricTotal')) {
+        document.getElementById('colabMetricTotal').textContent = `R$ ${totalFat.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        document.getElementById('colabMetricMonth').textContent = `R$ ${monthFat.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        document.getElementById('colabMetricHours').textContent = `${hours}h`;
+        document.getElementById('colabMetricScore').textContent = finalScore;
+        
+        let scoreDesc = "Status Excelente";
+        let statusClass = "up";
+        if (finalScore < 60) {
+            scoreDesc = "Atenção Necessária";
+            statusClass = "down";
+        } else if (finalScore < 85) {
+            scoreDesc = "Bom Desempenho";
+            statusClass = "up";
+        }
+        
+        const scoreDescEl = document.getElementById('colabMetricScoreDesc');
+        if (scoreDescEl) {
+            scoreDescEl.textContent = scoreDesc;
+            scoreDescEl.className = `am-delta ${statusClass}`;
+        }
+
+        let metaProg = Math.min(100, (monthFat / meta)*100);
+        document.getElementById('colabMetaTarget').textContent = `R$ ${meta.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        document.getElementById('colabMetaProgress').style.width = `${metaProg}%`;
+    }
+}
+
+function toggleSessionTimer(reqId) {
+    if (currentActiveSession && currentActiveSession.reqId === reqId) {
+        // Stop
+        const dur = Date.now() - currentActiveSession.startTime;
+        let reqs = getRequests();
+        let r = reqs.find(x => x.id === reqId);
+        if (r) {
+            r.timeLog = r.timeLog || {};
+            r.timeLog[currentColab.email] = r.timeLog[currentColab.email] || [];
+            r.timeLog[currentColab.email].push({
+                start: currentActiveSession.startTime,
+                end: Date.now(),
+                duration: dur
+            });
+            saveToStorage('nexcore_requests', reqs);
+        }
+        currentActiveSession = null;
+        clearInterval(colabSessionInterval);
+    } else {
+        // if another is running, stop it first
+        if (currentActiveSession) toggleSessionTimer(currentActiveSession.reqId);
+        currentActiveSession = { reqId: reqId, startTime: Date.now() };
+        colabSessionInterval = setInterval(colabSessionTick, 1000); // just update timer text
+    }
+    updateDashboards();
+}
+
+function colabSessionTick() {
+    if (!currentActiveSession || !currentColab) return;
+    const reqId = currentActiveSession.reqId;
+    const el = document.getElementById(`timerDisplay_${reqId}`);
+    if (el) {
+        let totalMs = Date.now() - currentActiveSession.startTime;
+        const reqs = getRequests();
+        const req = reqs.find(r => r.id === reqId);
+        if(req && req.timeLog && req.timeLog[currentColab.email]) {
+            totalMs += req.timeLog[currentColab.email].reduce((acc, log) => acc + log.duration, 0);
+        }
+        let totalSecs = Math.floor(totalMs / 1000);
+        let h = Math.floor(totalSecs / 3600);
+        let m = Math.floor((totalSecs % 3600) / 60);
+        let s = totalSecs % 60;
+        el.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+}
+
+function toggleTaskDone(reqId, taskIdx, isDone) {
+    let reqs = getRequests();
+    let r = reqs.find(x => x.id === reqId);
+    if(r && r.tasks && r.tasks[taskIdx]) {
+        r.tasks[taskIdx].done = isDone;
+        
+        // Auto update progress based on tasks
+        let total = r.tasks.length;
+        let doneCnt = r.tasks.filter(t => t.done).length;
+        r.progress = Math.round((doneCnt / total) * 100);
+        
+        // Log history
+        r.history = r.history || [];
+        r.history.push({
+            date: new Date().toISOString(),
+            type: 'task',
+            text: `Tarefa "${r.tasks[taskIdx].title}" marcada como ${isDone ? 'concluída' : 'pendente'}.`,
+            user: currentColab ? currentColab.name : 'Colaborador'
+        });
+        
+        logColabActivity(`Checklist atualizado no projeto #${r.id} (${r.progress}% concluído)`);
+        
+        saveToStorage('nexcore_requests', reqs);
+        updateDashboards();
+    }
+}
+
+function logColabActivity(text) {
+    if(!currentColab) return;
+    let k = `nexcore_colab_activity_${currentColab.email}`;
+    let act = JSON.parse(localStorage.getItem(k) || '[]');
+    act.unshift({ date: new Date().toISOString(), text });
+    if(act.length > 20) act = act.slice(0, 20);
+    localStorage.setItem(k, JSON.stringify(act));
+    renderColabActivity();
+}
+
+function renderColabActivity() {
+    let list = document.getElementById('colabActivityList');
+    if(!list || !currentColab) return;
+    let act = JSON.parse(localStorage.getItem(`nexcore_colab_activity_${currentColab.email}`) || '[]');
+    if(act.length === 0) {
+        list.innerHTML = `<div style="color:var(--text3);font-size:13px;">Nenhuma atividade recente.</div>`;
+        return;
+    }
+    list.innerHTML = act.map(a => `
+        <div style="background:rgba(255,255,255,0.03); padding:12px; border-radius:8px; border-left:3px solid var(--accent2);">
+            <div style="font-size:11px; color:var(--text3); margin-bottom:4px;">${new Date(a.date).toLocaleString('pt-BR')}</div>
+            <div style="font-size:13px; color:var(--text2);">${escapeHtml(a.text)}</div>
+        </div>
+    `).join('');
+}
+
+function switchColabTab(tab) {
+    document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('colabViewKanban').style.display = 'none';
+    document.getElementById('colabViewHistorico').style.display = 'none';
+    const feedbacksView = document.getElementById('colabViewFeedbacks');
+    if(feedbacksView) feedbacksView.style.display = 'none';
+    
+    if (tab === 'kanban') {
+        document.getElementById('colabTabKanbanBtn').classList.add('active');
+        document.getElementById('colabViewKanban').style.display = 'block';
+    } else if (tab === 'historico') {
+        document.getElementById('colabTabHistoricoBtn').classList.add('active');
+        document.getElementById('colabViewHistorico').style.display = 'block';
+        renderColabActivity();
+    } else if (tab === 'feedbacks') {
+        document.getElementById('colabTabFeedbacksBtn').classList.add('active');
+        if(feedbacksView) feedbacksView.style.display = 'block';
+        renderMyFeedbacks();
+    }
+}
+
+function changeColabStatus(status) {
+    if(!currentColab) return;
+    localStorage.setItem(`nexcore_colab_status_${currentColab.email}`, status);
+    // UI update logic here...
+    document.getElementById('colabStatusDisplay').textContent = status === 'disponivel' ? 'Disponível' : status === 'ocupado' ? 'Ocupado' : 'Férias';
+    // Colors
+    let color = status === 'disponivel' ? 'var(--green)' : status === 'ocupado' ? 'var(--amber)' : 'var(--text3)';
+    document.getElementById('colabStatusIndicator').style.background = color;
+}
+
+function editColabMeta() {
+    if(!currentColab) return;
+    let meta = prompt("Defina sua meta de faturamento para o mês (R$):", localStorage.getItem(`nexcore_colab_meta_${currentColab.email}`) || '5000');
+    if (meta && !isNaN(parseFloat(meta))) {
+        localStorage.setItem(`nexcore_colab_meta_${currentColab.email}`, parseFloat(meta).toString());
+        updateDashboards();
+    }
+}
+
 function updateColabKanban(requests) {
+    const listProposals = document.getElementById('listProposals');
     const listAvailable = document.getElementById('listAvailable');
     const listInProgress = document.getElementById('listInProgress');
+    const listReviewing = document.getElementById('listReviewing');
     const listDone = document.getElementById('listDone');
     if (!listAvailable || !listInProgress || !listDone) return;
 
+    if(listProposals) listProposals.innerHTML = '';
     listAvailable.innerHTML = '';
     listInProgress.innerHTML = '';
+    if(listReviewing) listReviewing.innerHTML = '';
     listDone.innerHTML = '';
 
-    let counts = { available: 0, inProgress: 0, done: 0 };
+    let counts = { proposals: 0, available: 0, inProgress: 0, reviewing: 0, done: 0 };
     requests.forEach(req => {
         if (req.status === 'aprovado') {
-            counts.available++;
-            listAvailable.appendChild(createTaskCard(req, 'accept'));
+            if (req.financialProposal && req.financialProposal.status === 'aguardando_confirmacao') {
+                counts.proposals++;
+                if(listProposals) listProposals.appendChild(createTaskCard(req, 'proposal'));
+            } else {
+                counts.available++;
+                listAvailable.appendChild(createTaskCard(req, 'accept'));
+            }
         } else if (req.status === 'execucao') {
             counts.inProgress++;
-            const isMine = req.assignedTo === currentColab?.name;
+            const isMine = req.assignedToEmail === currentColab?.email || req.assignedTo === currentColab?.name;
             listInProgress.appendChild(createTaskCard(req, isMine ? 'manage' : 'none'));
+        } else if (req.status === 'pendente_aprovacao') {
+            counts.reviewing++;
+            if(listReviewing) listReviewing.appendChild(createTaskCard(req, 'none'));
         } else if (req.status === 'concluido') {
             counts.done++;
             listDone.appendChild(createTaskCard(req, 'none'));
@@ -405,8 +750,12 @@ function updateColabKanban(requests) {
     });
 
     if (document.getElementById('countAvailable')) {
+        const countProp = document.getElementById('countProposals');
+        if(countProp) countProp.textContent = counts.proposals;
         document.getElementById('countAvailable').textContent = counts.available;
         document.getElementById('countInProgress').textContent = counts.inProgress;
+        const countRev = document.getElementById('countReviewing');
+        if(countRev) countRev.textContent = counts.reviewing;
         document.getElementById('countDone').textContent = counts.done;
     }
 }
@@ -415,6 +764,12 @@ function updateColabKanban(requests) {
 function updateDashboards() {
     serviceRequests = getRequests();
     currentColab = JSON.parse(localStorage.getItem('nexcore_colab') || 'null');
+
+    // Version UI Marker to confirm changes are live
+    const welcomeNameEl = document.getElementById('colabWelcomeName');
+    if (welcomeNameEl && currentColab) {
+        welcomeNameEl.innerHTML = `Bem-vindo, ${escapeHtml(currentColab.name)} <span style="font-size:10px; background:var(--accent2); padding:2px 6px; border-radius:4px; margin-left:8px; vertical-align:middle">V2.1 LIVE</span>`;
+    }
 
     const clientList = document.getElementById('clientProjectsList');
     const adminRoadmapList = document.getElementById('adminRoadmapList');
@@ -427,7 +782,9 @@ function updateDashboards() {
     updateClientTable(serviceRequests, clientList);
     updateAdminRoadmap(serviceRequests, adminRoadmapList);
     updateAdminInbox(serviceRequests, adminInboxList);
+    updateAdminReviewList(serviceRequests);
     updateColabKanban(serviceRequests);
+    updateColabMetrics();
 
     // Update admin leads counter
     const activeStats = document.querySelectorAll('.am-val');
@@ -436,14 +793,84 @@ function updateDashboards() {
     }
 }
 
+function getColabSLAHtml(deadlineStr) {
+    if (!deadlineStr) return '';
+    try {
+        const parts = deadlineStr.split('/');
+        if(parts.length !== 3) return '';
+        const dlDate = new Date(parts[2], parts[1]-1, parts[0]);
+        const now = new Date();
+        const diffMs = dlDate - now;
+        const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        
+        if (diffDays < 0) {
+            return `<div style="background:var(--red); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px; margin-top:4px; display:inline-block;">🔴 Atrasado</div>`;
+        } else if (diffDays <= 3) {
+            return `<div style="background:var(--amber); color:#000; font-size:10px; padding:2px 6px; border-radius:4px; margin-top:4px; display:inline-block;">⚠️ Prazo próximo</div>`;
+        }
+    } catch(e) {}
+    return '';
+}
+
+function getColabSessionTimerHtml(reqId) {
+    let isRunning = currentActiveSession && currentActiveSession.reqId === reqId;
+    let label = isRunning ? 'Pausar' : 'Iniciar';
+    let icon = isRunning ? 'pause-circle' : 'play-circle';
+    let btnColor = isRunning ? 'var(--amber)' : 'var(--green)';
+    
+    let totalMs = 0;
+    const req = serviceRequests.find(r => r.id === reqId);
+    if(req && req.timeLog && req.timeLog[currentColab.email]) {
+        totalMs = req.timeLog[currentColab.email].reduce((acc, log) => acc + log.duration, 0);
+    }
+    if (isRunning) {
+        totalMs += (Date.now() - currentActiveSession.startTime);
+    }
+    
+    let totalSecs = Math.floor(totalMs / 1000);
+    let h = Math.floor(totalSecs / 3600);
+    let m = Math.floor((totalSecs % 3600) / 60);
+    let s = totalSecs % 60;
+    let timeStr = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    
+    return `
+        <div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="font-size:13px; font-weight:600; font-variant-numeric:tabular-nums;" id="timerDisplay_${reqId}">${timeStr}</div>
+            <button class="btn-primary btn-sm" style="background:${btnColor}; padding:4px 8px; font-size:11px;" onclick="toggleSessionTimer(${reqId})">
+                <i data-lucide="${icon}" style="width:14px; margin-right:4px;"></i> ${label}
+            </button>
+        </div>
+    `;
+}
+
+function getColabTasksHtml(req, isMine) {
+    if (!req.tasks || req.tasks.length === 0) return '';
+    let tasksHtml = req.tasks.map((t, idx) => `
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+            <input type="checkbox" id="task_${req.id}_${idx}" ${t.done ? 'checked' : ''} ${!isMine ? 'disabled' : ''} onchange="toggleTaskDone(${req.id}, ${idx}, this.checked)" style="accent-color:var(--accent2); width:14px; height:14px;">
+            <label for="task_${req.id}_${idx}" style="font-size:12px; color:var(--text2); ${t.done ? 'text-decoration:line-through;opacity:0.6;' : ''}">${escapeHtml(t.title)}</label>
+        </div>
+    `).join('');
+    return `<div style="margin-top:10px; margin-bottom:10px; padding:10px; background:rgba(0,0,0,0.2); border-radius:8px;">
+                <div style="font-size:11px; color:var(--text3); margin-bottom:8px; text-transform:uppercase; font-weight:600;">Checklist</div>
+                ${tasksHtml}
+            </div>`;
+}
+
 function createTaskCard(req, actionType) {
     const card = document.createElement('div');
     card.className = 'task-card';
 
     let actionBtn = '';
+    let timerHtml = '';
+    let isMine = req.assignedToEmail === currentColab?.email || req.assignedTo === currentColab?.name;
+    
     if (actionType === 'accept') {
         actionBtn = `<button class="btn-primary btn-sm" onclick="acceptTask(${req.id})">Aceitar Demanda</button>`;
+    } else if (actionType === 'proposal') {
+        actionBtn = `<button class="btn-primary btn-sm" style="background:var(--accent2); margin-bottom:8px; width:100%" onclick="confirmProposal(${req.id})">✅ Confirmar Proposta</button>`;
     } else if (actionType === 'manage') {
+        timerHtml = getColabSessionTimerHtml(req.id);
         actionBtn = `
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
                 <button class="btn-primary btn-sm" style="background:var(--accent2)" onclick="openChat(${req.id})">Chat Admin</button>
@@ -456,11 +883,20 @@ function createTaskCard(req, actionType) {
     const deadlineInfo = req.deadlineColab
         ? `<span><i data-lucide="clock" style="width:12px"></i> Prazo: ${escapeHtml(req.deadlineColab)}</span>`
         : `<span><i data-lucide="calendar" style="width:12px"></i> ${escapeHtml(req.deadline)}</span>`;
+        
+    const slaBadge = getColabSLAHtml(req.deadlineColab);
+    
     const lastUpdateHtml = req.lastUpdate
         ? `<div class="update-badge">Status: ${escapeHtml(req.lastUpdate)}</div>`
         : '';
+        
     const editalPreview = escapeHtml((req.edital || '').substring(0, 80));
     const stackTags = (req.techStack || '').split(',').map(s => `<span class="stack-tag">${escapeHtml(s.trim())}</span>`).join('');
+    
+    const tasksHtml = getColabTasksHtml(req, isMine);
+
+    const assignedName = req.assignedTo || 'Pendente';
+    const isActuallyMine = req.assignedToEmail === currentColab?.email || req.assignedTo === currentColab?.name;
 
     card.innerHTML = `
         <div class="task-card-title">${escapeHtml(req.serviceType)}</div>
@@ -468,12 +904,27 @@ function createTaskCard(req, actionType) {
             <span><i data-lucide="user" style="width:12px"></i> ${escapeHtml(req.name)}</span>
             ${deadlineInfo}
         </div>
-        ${req.paymentValue ? `<div class="task-payment-value">R$ ${parseFloat(req.paymentValue).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>` : ''}
+        <div style="font-size:11px; color:var(--text3); margin-top:4px;">
+            <i data-lucide="user-check" style="width:12px; vertical-align:-2px"></i> Atribuído: ${escapeHtml(assignedName)}
+        </div>
+        ${slaBadge}
+        ${req.paymentValue ? `
+            <div style="margin-top:12px; padding:10px; background:rgba(16, 185, 129, 0.1); border-radius:8px; border:1px solid rgba(16, 185, 129, 0.2); display:flex; align-items:center; gap:8px">
+                <i data-lucide="banknote" style="width:16px; color:var(--green)"></i>
+                <div>
+                    <div style="font-size:10px; color:var(--text3); text-transform:uppercase; font-weight:700">Seu Repasse</div>
+                    <div style="font-size:18px; color:var(--green); font-weight:800; font-family:'Syne', sans-serif">R$ ${parseFloat(req.paymentValue).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                </div>
+            </div>
+        ` : ''}
         ${lastUpdateHtml}
         <div class="task-card-edital">${editalPreview}...</div>
+        ${tasksHtml}
         <div class="task-card-stack">${stackTags}</div>
+        ${timerHtml}
         <div class="task-card-actions">
             ${actionBtn}
+            ${!isActuallyMine && req.status === 'execucao' ? `<button class="btn-primary btn-sm" style="background:var(--amber); color:#000" onclick="acceptTask(${req.id})">Assumir este Projeto</button>` : ''}
             <button class="btn-ghost btn-sm" onclick="openDetailsModal(${req.id})">Ver Detalhes</button>
             <button class="btn-ghost btn-sm" onclick="openDescriptionModal(${req.id})">Descrição Técnica</button>
         </div>
@@ -499,8 +950,88 @@ function openApproveModal(id) {
     document.getElementById('approveFile').value = '';
     document.getElementById('fileNameLabel').textContent = 'Selecionar arquivo...';
     document.getElementById('approveEdital').value = req.details;
+    approveTasksTemp = [];
+    approveMilestonesTemp = [];
+    document.getElementById('approvePaymentType').value = 'a_vista';
+    document.getElementById('approvePaymentDeadline').value = '';
+    document.getElementById('approvePaymentNotes').value = '';
+    toggleMilestones();
+    renderApproveTasks();
+    renderApproveMilestones();
     document.getElementById('approvalModal').style.display = 'flex';
     if (typeof lucide !== 'undefined') lucide.createIcons({ portal: document.getElementById('approvalModal') });
+}
+
+let approveMilestonesTemp = [];
+
+function toggleMilestones() {
+    const type = document.getElementById('approvePaymentType').value;
+    document.getElementById('milestonesContainer').style.display = type === 'milestones' ? 'block' : 'none';
+}
+
+function addApproveMilestone() {
+    const valInput = document.getElementById('milestoneValue');
+    const descInput = document.getElementById('milestoneDesc');
+    const val = parseCurrency(valInput.value);
+    const desc = descInput.value.trim();
+    if (val && desc) {
+        approveMilestonesTemp.push({ value: val, trigger: desc });
+        valInput.value = '';
+        descInput.value = '';
+        renderApproveMilestones();
+    }
+}
+
+function renderApproveMilestones() {
+    const list = document.getElementById('approveMilestonesList');
+    if (!list) return;
+    if (approveMilestonesTemp.length === 0) {
+        list.innerHTML = `<div style="font-size:12px; color:var(--text3);">Nenhum milestone adicionado.</div>`;
+        return;
+    }
+    list.innerHTML = approveMilestonesTemp.map((m, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text2);">
+            <span>R$ ${m.value.toLocaleString('pt-BR', {minimumFractionDigits:2})} - ${escapeHtml(m.trigger)}</span>
+            <button class="btn-ghost" style="padding:2px; color:var(--red);" onclick="removeApproveMilestone(${idx})"><i data-lucide="trash-2" style="width:14px; height:14px;"></i></button>
+        </div>
+    `).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons({ portal: list });
+}
+
+function removeApproveMilestone(idx) {
+    approveMilestonesTemp.splice(idx, 1);
+    renderApproveMilestones();
+}
+
+function addApproveTask() {
+    const input = document.getElementById('approveTaskInput');
+    const val = input.value.trim();
+    if (val) {
+        approveTasksTemp.push({ title: val, done: false });
+        input.value = '';
+        renderApproveTasks();
+    }
+}
+
+function renderApproveTasks() {
+    const list = document.getElementById('approveTasksList');
+    if (!list) return;
+    if (approveTasksTemp.length === 0) {
+        list.innerHTML = `<div style="font-size:12px; color:var(--text3);">Nenhuma tarefa adicionada.</div>`;
+        return;
+    }
+    list.innerHTML = approveTasksTemp.map((t, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text2);">
+            <span>${escapeHtml(t.title)}</span>
+            <button class="btn-ghost" style="padding:2px; color:var(--red);" onclick="removeApproveTask(${idx})"><i data-lucide="trash-2" style="width:14px; height:14px;"></i></button>
+        </div>
+    `).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons({ portal: list });
+}
+
+function removeApproveTask(idx) {
+    approveTasksTemp.splice(idx, 1);
+    renderApproveTasks();
 }
 
 function updateFileName(input) {
@@ -550,10 +1081,18 @@ function confirmApproval() {
     const collabDeadline = document.getElementById('approveCollabDeadline').value;
     const paymentValueRaw = document.getElementById('approvePaymentValue').value;
     const paymentValue = parseCurrency(paymentValueRaw);
+    const paymentType = document.getElementById('approvePaymentType').value;
+    const paymentDeadline = document.getElementById('approvePaymentDeadline').value;
+    const paymentNotes = document.getElementById('approvePaymentNotes').value;
     const edital = document.getElementById('approveEdital').value;
 
     if (!stack || !edital || !clientDeadline || !collabDeadline || !paymentValueRaw) {
-        alert('Por favor, preencha todos os campos do edital, prazos e valor.');
+        alert('Por favor, preencha todos os campos obrigatórios do edital, prazos e valor.');
+        return;
+    }
+    
+    if (paymentType === 'milestones' && approveMilestonesTemp.length === 0) {
+        alert('Por favor, adicione pelo menos um milestone de pagamento.');
         return;
     }
 
@@ -564,7 +1103,23 @@ function confirmApproval() {
         serviceRequests[reqIndex].deadlineCliente = clientDeadline;
         serviceRequests[reqIndex].deadlineColab = collabDeadline;
         serviceRequests[reqIndex].paymentValue = paymentValue;
+        serviceRequests[reqIndex].financialProposal = {
+            totalValue: paymentValue,
+            paymentType: paymentType,
+            milestones: JSON.parse(JSON.stringify(approveMilestonesTemp)),
+            paymentDeadline: paymentDeadline,
+            notes: paymentNotes,
+            status: 'aguardando_confirmacao'
+        };
         serviceRequests[reqIndex].edital = edital;
+        serviceRequests[reqIndex].tasks = JSON.parse(JSON.stringify(approveTasksTemp));
+        serviceRequests[reqIndex].progress = 0;
+        serviceRequests[reqIndex].history = [{
+            date: new Date().toISOString(),
+            type: 'status',
+            text: 'Projeto aprovado e publicado no Workspace.',
+            user: 'Admin'
+        }];
 
         // Simulate file attachment
         const fileInput = document.getElementById('approveFile');
@@ -602,6 +1157,10 @@ function doColabLogin() {
         document.getElementById('colabLoginWrap').style.display = 'none';
         document.getElementById('colabDash').style.display = 'block';
         document.getElementById('colabWelcomeName').textContent = `Olá, ${currentColab.name}!`;
+        
+        let savedStatus = localStorage.getItem(`nexcore_colab_status_${currentColab.email}`) || 'disponivel';
+        changeColabStatus(savedStatus);
+        
         updateDashboards();
     } else {
         alert('Acesso negado. Use: colaborador@twotype.com / colab123');
@@ -609,6 +1168,7 @@ function doColabLogin() {
 }
 
 function doColabLogout() {
+    if (currentActiveSession) toggleSessionTimer(currentActiveSession.reqId); // stop session on logout
     currentColab = null;
     localStorage.removeItem('nexcore_colab');
     document.getElementById('colabLoginWrap').style.display = 'block';
@@ -623,22 +1183,176 @@ function acceptTask(id) {
     if (reqIndex !== -1) {
         serviceRequests[reqIndex].status = 'execucao';
         serviceRequests[reqIndex].assignedTo = currentColab.name;
+        serviceRequests[reqIndex].assignedToEmail = currentColab.email;
         serviceRequests[reqIndex].progress = 15;
+        serviceRequests[reqIndex].history = serviceRequests[reqIndex].history || [];
+        serviceRequests[reqIndex].history.push({
+            date: new Date().toISOString(),
+            type: 'status',
+            text: 'Projeto assumido pelo colaborador.',
+            user: currentColab.name
+        });
+        logColabActivity(`Aceitou o projeto #${id}`);
         saveToStorage('nexcore_requests', serviceRequests);
         updateDashboards();
         alert('Demanda aceita! Olhe na sua coluna "Em Execução".');
     }
 }
 
+function confirmProposal(id) {
+    const reqIndex = serviceRequests.findIndex(r => r.id === id);
+    if (reqIndex !== -1) {
+        if (!serviceRequests[reqIndex].financialProposal) return;
+        serviceRequests[reqIndex].financialProposal.status = 'confirmada';
+        serviceRequests[reqIndex].history = serviceRequests[reqIndex].history || [];
+        serviceRequests[reqIndex].history.push({
+            date: new Date().toISOString(),
+            type: 'status',
+            text: 'Proposta financeira confirmada pelo colaborador.',
+            user: currentColab ? currentColab.name : 'Colaborador'
+        });
+        logColabActivity(`Confirmou a proposta do projeto #${id}`);
+        
+        // Move to execution and assign to me
+        serviceRequests[reqIndex].status = 'execucao';
+        serviceRequests[reqIndex].assignedTo = currentColab.name;
+        serviceRequests[reqIndex].assignedToEmail = currentColab.email;
+        serviceRequests[reqIndex].progress = 15;
+
+        saveToStorage('nexcore_requests', serviceRequests);
+        updateDashboards();
+        alert('Proposta confirmada! O projeto foi movido para sua coluna "Em Execução".');
+    }
+}
+
 function finishTask(id) {
+    if (!currentColab) {
+        alert('Erro: Colaborador não identificado. Faça login novamente.');
+        return;
+    }
+    const reqIndex = serviceRequests.findIndex(r => r.id === id);
+    if (reqIndex !== -1) {
+        serviceRequests[reqIndex].status = 'pendente_aprovacao';
+        serviceRequests[reqIndex].progress = 95;
+        serviceRequests[reqIndex].lastUpdate = 'Aguardando aprovação final do Admin';
+        serviceRequests[reqIndex].history = serviceRequests[reqIndex].history || [];
+        serviceRequests[reqIndex].history.push({
+            date: new Date().toISOString(),
+            type: 'status',
+            text: 'Projeto enviado para revisão do Admin.',
+            user: currentColab.name
+        });
+        logColabActivity(`Enviou o projeto #${id} para revisão`);
+        saveToStorage('nexcore_requests', serviceRequests);
+        updateDashboards();
+        alert('Projeto enviado para revisão! Aguarde a aprovação do Administrador.');
+    }
+}
+
+let currentRejectId = null;
+
+function approveDelivery(id) {
     const reqIndex = serviceRequests.findIndex(r => r.id === id);
     if (reqIndex !== -1) {
         serviceRequests[reqIndex].status = 'concluido';
         serviceRequests[reqIndex].progress = 100;
+        serviceRequests[reqIndex].history = serviceRequests[reqIndex].history || [];
+        serviceRequests[reqIndex].history.push({
+            date: new Date().toISOString(),
+            type: 'status',
+            text: 'Projeto aprovado pelo Admin. Entrega finalizada.',
+            user: 'Admin'
+        });
+        
         saveToStorage('nexcore_requests', serviceRequests);
         updateDashboards();
-        alert('Demanda concluída com sucesso!');
+        alert('Entrega aprovada com sucesso! O projeto foi finalizado.');
+        
+        // Open feedback modal for client demo
+        currentFeedbackReqId = id;
+        document.getElementById('feedbackModal').style.display = 'flex';
+        selectFeedbackStar(5);
     }
+}
+
+function openRejectModal(id) {
+    currentRejectId = id;
+    document.getElementById('adminRejectComment').value = '';
+    document.getElementById('adminRejectModal').style.display = 'flex';
+}
+
+function closeRejectModal() {
+    document.getElementById('adminRejectModal').style.display = 'none';
+    currentRejectId = null;
+}
+
+function confirmRejectDelivery() {
+    if(!currentRejectId) return;
+    const comment = document.getElementById('adminRejectComment').value.trim();
+    if(!comment) {
+        alert("Descreva o motivo da reprovação.");
+        return;
+    }
+    
+    const reqIndex = serviceRequests.findIndex(r => r.id === currentRejectId);
+    if(reqIndex !== -1) {
+        serviceRequests[reqIndex].status = 'execucao';
+        serviceRequests[reqIndex].history = serviceRequests[reqIndex].history || [];
+        serviceRequests[reqIndex].history.push({
+            date: new Date().toISOString(),
+            type: 'status',
+            text: `Entrega REPROVADA: ${comment}`,
+            user: 'Admin'
+        });
+        saveToStorage('nexcore_requests', serviceRequests);
+        updateDashboards();
+        closeRejectModal();
+        alert("Projeto devolvido para o colaborador com os comentários de ajuste.");
+    }
+}
+
+let currentFeedbackReqId = null;
+let currentFeedbackStar = 5;
+
+function selectFeedbackStar(val) {
+    currentFeedbackStar = val;
+    document.querySelectorAll('.feedback-star').forEach(el => {
+        if(parseInt(el.getAttribute('data-val')) <= val) {
+            el.style.color = 'var(--accent2)';
+            el.style.fill = 'var(--accent2)';
+        } else {
+            el.style.color = 'var(--text3)';
+            el.style.fill = 'none';
+        }
+    });
+}
+
+function closeFeedbackModal() {
+    document.getElementById('feedbackModal').style.display = 'none';
+}
+
+function submitFeedback() {
+    if(!currentFeedbackReqId) return;
+    const req = serviceRequests.find(r => r.id === currentFeedbackReqId);
+    if(!req) return;
+    
+    const comment = document.getElementById('feedbackComment').value.trim();
+    let feedbacks = JSON.parse(localStorage.getItem('nexcore_feedbacks') || '[]');
+    feedbacks.push({
+        reqId: currentFeedbackReqId,
+        colabEmail: (req.assignedTo && req.assignedTo.includes('@')) ? req.assignedTo : 'colaborador@twotype.com',
+        clientName: req.name,
+        service: req.serviceType,
+        stars: currentFeedbackStar,
+        comment: comment,
+        date: new Date().toISOString()
+    });
+    localStorage.setItem('nexcore_feedbacks', JSON.stringify(feedbacks));
+    closeFeedbackModal();
+    alert('Avaliação enviada com sucesso! Muito obrigado.');
+    updateColabMetrics();
+    if(typeof renderAdminFeedbacks === 'function') renderAdminFeedbacks();
+    if(typeof renderMyFeedbacks === 'function') renderMyFeedbacks();
 }
 function doLogin() {
     const email = document.getElementById('loginEmail').value.trim();
@@ -1486,6 +2200,20 @@ function confirmUpdate() {
     if (reqIndex !== -1) {
         serviceRequests[reqIndex].progress = parseInt(progress);
         serviceRequests[reqIndex].lastUpdate = text;
+        serviceRequests[reqIndex].lastUpdateDate = new Date().toISOString();
+
+        // Log history
+        serviceRequests[reqIndex].history = serviceRequests[reqIndex].history || [];
+        serviceRequests[reqIndex].history.push({
+            date: new Date().toISOString(),
+            type: 'update',
+            text: `Progresso: ${progress}%. ` + (text || ''),
+            user: currentColab ? currentColab.name : 'Colaborador'
+        });
+
+        if (currentColab) {
+            logColabActivity(`Atualizou o projeto #${currentUpdateId} para ${progress}%`);
+        }
 
         saveToStorage('nexcore_requests', serviceRequests);
         updateDashboards();
@@ -1545,9 +2273,51 @@ function openDetailsModal(id) {
 
     if (req.paymentValue && !isClient) {
         paymentEl.style.display = 'flex';
-        paymentEl.innerHTML = `<span>Pagamento:</span> <span>R$ ${parseFloat(req.paymentValue).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>`;
+        paymentEl.innerHTML = `<span>Valor:</span> <span>R$ ${parseFloat(req.paymentValue).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>`;
     } else {
         paymentEl.style.display = 'none';
+    }
+
+    // Financial Proposal details
+    const finContainer = document.getElementById('detFinancialContainer');
+    const finBody = document.getElementById('detFinancialBody');
+    const milesArea = document.getElementById('detMilestonesArea');
+    const milesList = document.getElementById('detMilestonesList');
+
+    if (req.financialProposal && !isClient) {
+        const fp = req.financialProposal;
+        finContainer.style.display = 'block';
+        
+        const typeMap = { 'a_vista': 'À vista', '50_50': '50% / 50%', 'milestones': 'Milestones' };
+        
+        finBody.innerHTML = `
+            <div>
+                <div style="font-size:10px; color:var(--text3)">FORMA DE PAGAMENTO</div>
+                <div style="font-size:13px; color:#fff">${typeMap[fp.paymentType] || fp.paymentType}</div>
+            </div>
+            <div>
+                <div style="font-size:10px; color:var(--text3)">PRAZO DE PAGAMENTO</div>
+                <div style="font-size:13px; color:#fff">${fp.paymentDeadline || '5 dias úteis'}</div>
+            </div>
+            <div style="grid-column: span 2">
+                <div style="font-size:10px; color:var(--text3)">OBSERVAÇÕES</div>
+                <div style="font-size:12px; color:var(--text2); font-style:italic">"${fp.notes || 'Nenhuma observação financeira'}"</div>
+            </div>
+        `;
+
+        if (fp.paymentType === 'milestones' && fp.milestones && fp.milestones.length > 0) {
+            milesArea.style.display = 'block';
+            milesList.innerHTML = fp.milestones.map(m => `
+                <div style="display:flex; justify-content:space-between; font-size:12px; background:rgba(0,0,0,0.2); padding:6px 10px; border-radius:6px">
+                    <span style="color:var(--text2)">${escapeHtml(m.trigger)}</span>
+                    <span style="color:var(--green); font-weight:600">R$ ${m.value.toLocaleString('pt-BR', {minimumFractionDigits:2})}</span>
+                </div>
+            `).join('');
+        } else {
+            milesArea.style.display = 'none';
+        }
+    } else {
+        finContainer.style.display = 'none';
     }
 
     // Attachment
@@ -1573,6 +2343,41 @@ function openDetailsModal(id) {
         stackContainer.innerHTML = req.techStack.split(',').map(s => `<span class="stack-tag">${escapeHtml(s.trim())}</span>`).join('');
     } else {
         stackContainer.innerHTML = '<span style="color:var(--text3); font-size:12px">Pendente de aprovação técnica</span>';
+    }
+
+    // Tasks
+    const tasksContainer = document.getElementById('detTasksContainer');
+    const tasksList = document.getElementById('detTasksList');
+    if (tasksContainer && tasksList) {
+        if (req.tasks && req.tasks.length > 0) {
+            tasksContainer.style.display = 'block';
+            tasksList.innerHTML = req.tasks.map((t, idx) => `
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" disabled ${t.done ? 'checked' : ''} style="accent-color:var(--accent2);">
+                    <span style="font-size:13px; color:var(--text2); ${t.done ? 'text-decoration:line-through;opacity:0.6' : ''}">${escapeHtml(t.title)}</span>
+                </div>
+            `).join('');
+        } else {
+            tasksContainer.style.display = 'none';
+        }
+    }
+
+    // Timeline
+    const timelineContainer = document.getElementById('detTimelineContainer');
+    const timelineList = document.getElementById('detTimelineList');
+    if (timelineContainer && timelineList) {
+        if (req.history && req.history.length > 0) {
+            timelineContainer.style.display = 'block';
+            timelineList.innerHTML = req.history.slice().reverse().map(h => `
+                <div style="position:relative;">
+                    <div style="position:absolute; left:-23px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--accent2); border:2px solid var(--bg3);"></div>
+                    <div style="font-size:11px; color:var(--text3);">${new Date(h.date).toLocaleString('pt-BR')} - ${escapeHtml(h.user)}</div>
+                    <div style="font-size:13px; color:var(--text2); margin-top:2px;">${escapeHtml(h.text)}</div>
+                </div>
+            `).join('');
+        } else {
+            timelineContainer.style.display = 'none';
+        }
     }
 
     // Last Update
@@ -1682,25 +2487,140 @@ function switchAdminTab(tab) {
 
     // Update tab buttons
     document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
-    const btnMap = { roadmap: 'adminTabRoadmap', suporte: 'adminTabSuporte', equipe: 'adminTabEquipe' };
-    const btn = document.getElementById(btnMap[tab]);
-    if (btn) btn.classList.add('active');
+    const btnMap = { roadmap: 'adminTabRoadmap', suporte: 'adminTabSuporte', equipe: 'adminTabEquipe', feedbacks: 'adminTabFeedbacks' };
+    const btnId = btnMap[tab];
+    if (btnId) {
+        const btn = document.getElementById(btnId);
+        if(btn) btn.classList.add('active');
+    }
 
     // Show/hide views
     const roadmapView = document.getElementById('adminViewRoadmap');
     const suporteView = document.getElementById('adminViewSuporte');
     const equipeView = document.getElementById('adminViewEquipe');
+    const feedbacksView = document.getElementById('adminViewFeedbacks');
+    
     if (roadmapView) roadmapView.style.display = tab === 'roadmap' ? '' : 'none';
     if (suporteView) suporteView.style.display = tab === 'suporte' ? '' : 'none';
     if (equipeView) equipeView.style.display = tab === 'equipe' ? '' : 'none';
+    if (feedbacksView) feedbacksView.style.display = tab === 'feedbacks' ? '' : 'none';
 
     if (tab === 'suporte') {
         renderAdminSupportTickets();
     } else if (tab === 'equipe') {
         renderAdminEquipe();
+    } else if (tab === 'feedbacks') {
+        if(typeof renderAdminFeedbacks === 'function') renderAdminFeedbacks();
     }
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function exportEquipeCSV() {
+    const colabs = JSON.parse(localStorage.getItem('nexcore_colabs') || '[]');
+    let csv = "Nome,Email,Status,Faturamento Total\n";
+    colabs.forEach(c => {
+        let status = localStorage.getItem(`nexcore_colab_status_${c.email}`) || 'indefinido';
+        csv += `"${c.name}","${c.email}","${status}","N/A"\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'equipe_nexcore.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function renderAdminFeedbacks() {
+    const list = document.getElementById('adminFeedbacksList');
+    if(!list) return;
+    
+    let feedbacks = JSON.parse(localStorage.getItem('nexcore_feedbacks') || '[]');
+    const filterDev = document.getElementById('adminFeedbackFilterDev').value;
+    const filterStars = document.getElementById('adminFeedbackFilterStars').value;
+    
+    if(filterDev !== 'todos') {
+        feedbacks = feedbacks.filter(f => f.colabEmail === filterDev);
+    }
+    if(filterStars !== 'todos') {
+        feedbacks = feedbacks.filter(f => f.stars === parseInt(filterStars));
+    }
+    
+    if(feedbacks.length === 0) {
+        list.innerHTML = '<div class="empty-state" style="padding:32px;text-align:center;color:var(--text3)">Nenhum feedback encontrado.</div>';
+        return;
+    }
+    
+    list.innerHTML = feedbacks.map(f => `
+        <div style="background:rgba(255,255,255,0.02); padding:16px; border-radius:12px; border:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <div style="font-weight:600; color:#fff;">${escapeHtml(f.clientName)} <span style="font-size:12px; color:var(--text3); font-weight:400; margin-left:8px;">${escapeHtml(f.service)}</span></div>
+                <div style="display:flex; gap:2px;">
+                    ${[1,2,3,4,5].map(s => `<i data-lucide="star" style="width:14px; color:${s <= f.stars ? 'var(--accent2)' : 'var(--text3)'}; fill:${s <= f.stars ? 'var(--accent2)' : 'none'};"></i>`).join('')}
+                </div>
+            </div>
+            <div style="font-size:13px; color:var(--text2); margin-bottom:8px;">${escapeHtml(f.comment || 'Sem comentário')}</div>
+            <div style="font-size:11px; color:var(--text3); display:flex; justify-content:space-between;">
+                <span>Colaborador: ${escapeHtml(f.colabEmail)}</span>
+                <span>${new Date(f.date).toLocaleDateString('pt-BR')}</span>
+            </div>
+        </div>
+    `).join('');
+    
+    if (typeof lucide !== 'undefined') lucide.createIcons({ portal: list });
+}
+
+function exportFeedbacksCSV() {
+    const feedbacks = JSON.parse(localStorage.getItem('nexcore_feedbacks') || '[]');
+    let csv = "Data,Cliente,Serviço,Nota,Comentário,Colaborador\n";
+    feedbacks.forEach(f => {
+        csv += `"${new Date(f.date).toLocaleDateString('pt-BR')}","${escapeHtml(f.clientName)}","${escapeHtml(f.service)}","${f.stars}","${escapeHtml(f.comment).replace(/"/g, '""')}","${escapeHtml(f.colabEmail)}"\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'feedbacks_nexcore.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function renderMyFeedbacks() {
+    if(!currentColab) return;
+    const list = document.getElementById('colabFeedbacksList');
+    const avgDisplay = document.getElementById('colabFeedbackAvg');
+    if(!list) return;
+    
+    let feedbacks = JSON.parse(localStorage.getItem('nexcore_feedbacks') || '[]');
+    feedbacks = feedbacks.filter(f => f.colabEmail === currentColab.email);
+    
+    if(feedbacks.length === 0) {
+        list.innerHTML = '<div class="empty-state" style="padding:32px;text-align:center;color:var(--text3)">Você ainda não recebeu feedbacks.</div>';
+        if(avgDisplay) avgDisplay.textContent = '0.0';
+        return;
+    }
+    
+    const sum = feedbacks.reduce((acc, f) => acc + f.stars, 0);
+    const avg = (sum / feedbacks.length).toFixed(1);
+    if(avgDisplay) avgDisplay.textContent = avg;
+    
+    list.innerHTML = feedbacks.map(f => `
+        <div style="background:rgba(255,255,255,0.02); padding:16px; border-radius:12px; border:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <div style="font-weight:600; color:#fff;">${escapeHtml(f.clientName)} <span style="font-size:12px; color:var(--text3); font-weight:400; margin-left:8px;">${escapeHtml(f.service)}</span></div>
+                <div style="display:flex; gap:2px;">
+                    ${[1,2,3,4,5].map(s => `<i data-lucide="star" style="width:14px; color:${s <= f.stars ? 'var(--accent2)' : 'var(--text3)'}; fill:${s <= f.stars ? 'var(--accent2)' : 'none'};"></i>`).join('')}
+                </div>
+            </div>
+            <div style="font-size:13px; color:var(--text2); margin-bottom:8px;">${escapeHtml(f.comment || 'Sem comentário')}</div>
+            <div style="font-size:11px; color:var(--text3); text-align:right;">${new Date(f.date).toLocaleDateString('pt-BR')}</div>
+        </div>
+    `).join('');
+    
+    if (typeof lucide !== 'undefined') lucide.createIcons({ portal: list });
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1970,15 +2890,36 @@ function renderAdminEquipe() {
         const chatMsgs = allChats[colab.email] || [];
         const unread = chatMsgs.filter(m => m.sender === 'colab' && !m.readByAdmin).length;
         const lastMsg = chatMsgs[chatMsgs.length - 1];
+        
+        let status = localStorage.getItem(`nexcore_colab_status_${colab.email}`) || 'disponivel';
+        let statusColor = status === 'disponivel' ? 'var(--green)' : status === 'ocupado' ? 'var(--amber)' : 'var(--text3)';
+        let statusText = status === 'disponivel' ? 'Disponível' : status === 'ocupado' ? 'Ocupado' : 'Férias';
+        
+        let reqs = getRequests();
+        let projCount = reqs.filter(r => r.status === 'execucao' && r.assignedTo === colab.name.split(' ')[0]).length; // name matching is a bit brittle, fallback below
+        if(colab.email === 'colaborador@twotype.com') {
+             projCount = reqs.filter(r => r.status === 'execucao' && r.assignedTo === 'colaborador').length;
+        }
 
+        const score = calculatePerformanceScore(colab.email, colab.name);
+        
         const card = document.createElement('div');
         card.className = 'admin-equipe-card';
+        card.style.position = 'relative';
         card.innerHTML = `
+            <div style="position:absolute; top:12px; right:12px; display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text2); background:rgba(0,0,0,0.2); padding:4px 8px; border-radius:12px;">
+                <div style="width:8px; height:8px; border-radius:50%; background:${statusColor}; box-shadow:0 0 5px ${statusColor};"></div>
+                ${statusText}
+            </div>
             <div class="admin-equipe-avatar">${colab.avatar}</div>
             <div class="admin-equipe-info">
                 <div class="admin-equipe-name">${escapeHtml(colab.name)}</div>
                 <div class="admin-equipe-role">${escapeHtml(colab.role)}</div>
-                ${lastMsg ? `<div class="admin-equipe-last-msg">${escapeHtml(lastMsg.text.substring(0, 40))}${lastMsg.text.length > 40 ? '...' : ''}</div>` : ''}
+                <div style="display:flex; gap:12px; margin-top:6px;">
+                    <div style="font-size:11px; color:var(--accent2); background:rgba(100,255,218,0.05); padding:2px 8px; border-radius:4px;"><i data-lucide="layers" style="width:10px; margin-right:4px;"></i> ${projCount} projetos</div>
+                    <div style="font-size:11px; color:var(--green); background:rgba(46,204,113,0.05); padding:2px 8px; border-radius:4px;"><i data-lucide="award" style="width:10px; margin-right:4px;"></i> Score: ${score}</div>
+                </div>
+                ${lastMsg ? `<div class="admin-equipe-last-msg" style="margin-top:8px;">${escapeHtml(lastMsg.text.substring(0, 40))}${lastMsg.text.length > 40 ? '...' : ''}</div>` : ''}
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
                 ${unread > 0 ? `<span class="admin-tab-badge" style="position:static;display:inline-flex">${unread}</span>` : ''}

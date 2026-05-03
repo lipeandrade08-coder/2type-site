@@ -1,5 +1,5 @@
 'use client'
-import { LayoutDashboard, Users, DollarSign, TrendingDown, TrendingUp, FolderOpen, Inbox, Headphones, LogOut } from 'lucide-react'
+import { LayoutDashboard, Users, DollarSign, TrendingDown, TrendingUp, FolderOpen, Inbox, Headphones, LogOut, ClipboardCheck } from 'lucide-react'
 
 const NAV = [
   { id: 'dashboard',    label: 'Dashboard',          icon: LayoutDashboard },
@@ -9,6 +9,7 @@ const NAV = [
   { id: 'lucro',        label: 'Lucro',                icon: TrendingUp },
   { id: 'projetos',     label: 'Projetos Realizados',  icon: FolderOpen },
   { id: 'solicitacoes', label: 'Solicitações',         icon: Inbox },
+  { id: 'analise',      label: 'Análise de Entregas',  icon: ClipboardCheck },
   { id: 'suporte',      label: 'Suporte',              icon: Headphones },
 ]
 
@@ -63,6 +64,15 @@ export default function Sidebar({ activeTab, setActiveTab, pendingCount, support
                   padding: '0 6px',
                 }} className="badge-pulse">
                   {supportCount}
+                </span>
+              )}
+              {id === 'analise' && pendingCount > 0 && (
+                <span style={{
+                  fontSize: 11, fontWeight: 700, minWidth: 20, height: 20, borderRadius: 10,
+                  background: '#22d3ee', color: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  padding: '0 6px',
+                }} className="badge-pulse">
+                  {pendingCount}
                 </span>
               )}
             </button>

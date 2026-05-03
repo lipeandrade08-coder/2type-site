@@ -9,6 +9,7 @@ import CustosTab       from '@/components/tabs/CustosTab'
 import LucroTab        from '@/components/tabs/LucroTab'
 import ProjetosTab     from '@/components/tabs/ProjetosTab'
 import SolicitacoesTab from '@/components/tabs/SolicitacoesTab'
+import AnaliseTab      from '@/components/tabs/AnaliseTab'
 import SuporteTab      from '@/components/tabs/SuporteTab'
 
 // ── MOCK DATA ──────────────────────────────────────────────────────────────────
@@ -140,7 +141,35 @@ export default function AdminPage() {
     }))
   }
 
-  const pendingCount = role === 'colaborador' ? 0 : data.solicitacoes.filter(s => s.status === 'novo').length
+  const approveDelivery = (id) => {
+    setData(d => ({
+      ...d,
+      solicitacoes: d.solicitacoes.map(s =>
+        s.id === id ? { ...s, status: 'concluido', progress: 100 } : s
+      ),
+    }))
+  }
+
+  const rejectDelivery = (id, comment) => {
+    setData(d => ({
+      ...d,
+      solicitacoes: d.solicitacoes.map(s =>
+        s.id === id ? { 
+          ...s, 
+          status: 'execucao', 
+          lastUpdate: 'Ajustes solicitados pelo Admin',
+          history: [...(s.history || []), { 
+            date: new Date().toISOString(), 
+            type: 'reject', 
+            text: comment, 
+            user: 'Admin' 
+          }] 
+        } : s
+      ),
+    }))
+  }
+
+  const pendingCount = role === 'colaborador' ? 0 : data.solicitacoes.filter(s => s.status === 'novo' || s.status === 'pendente_aprovacao').length
 
   // ── RENDER: LOGIN ──
   if (!authed) {
@@ -212,6 +241,7 @@ export default function AdminPage() {
     lucro:        { component: LucroTab,        props: { faturamento: data.faturamento, custos: data.custos, role } },
     projetos:     { component: ProjetosTab,     props: { projetos: data.projetos, equipe: data.equipe, onAdd: addProjeto, role } },
     solicitacoes: { component: SolicitacoesTab, props: { solicitacoes: data.solicitacoes, onAdd: addSolicitacao, onApprove: approveSolicitacao, role, currentColab: loginForm.user.split('@')[0] } },
+    analise:      { component: AnaliseTab,      props: { solicitacoes: data.solicitacoes, onApproveDelivery: approveDelivery, onRejectDelivery: rejectDelivery, role } },
     suporte:      { component: SuporteTab,      props: {} },
   }
 
