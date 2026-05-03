@@ -84,7 +84,10 @@ export default function AdminPage() {
       if (e.key === LS_KEY_REQUESTS) {
         try {
           const requests = JSON.parse(e.newValue || '[]')
-          setData(prev => ({ ...prev, solicitacoes: requests }))
+          setData(prev => {
+            if (JSON.stringify(prev.solicitacoes) === JSON.stringify(requests)) return prev;
+            return { ...prev, solicitacoes: requests };
+          });
         } catch (_) {}
       }
       if (e.key === 'nexcore_support_tickets' || e.key === 'nexcore_support_ping') {
@@ -95,12 +98,12 @@ export default function AdminPage() {
     return () => window.removeEventListener('storage', onStorage)
   }, [])
 
-  // ── Salva solicitações no localStorage sempre que mudarem ──
-  useEffect(() => {
+  // Helper to save requests and notify site
+  const saveRequests = (requests) => {
     try {
-      localStorage.setItem(LS_KEY_REQUESTS, JSON.stringify(data.solicitacoes))
+      localStorage.setItem(LS_KEY_REQUESTS, JSON.stringify(requests));
     } catch (_) {}
-  }, [data.solicitacoes])
+  }
 
   // ── LOGIN ──
   const handleLogin = e => {
@@ -133,27 +136,28 @@ export default function AdminPage() {
     setData(d => ({ ...d, solicitacoes: [sol, ...d.solicitacoes] }))
 
   const approveSolicitacao = (id, updates) => {
-    setData(d => ({
-      ...d,
-      solicitacoes: d.solicitacoes.map(s =>
+    setData(d => {
+      const newSol = d.solicitacoes.map(s =>
         s.id === id ? { ...s, status: 'disponivel', ...updates } : s
-      ),
-    }))
+      );
+      saveRequests(newSol);
+      return { ...d, solicitacoes: newSol };
+    })
   }
 
   const approveDelivery = (id) => {
-    setData(d => ({
-      ...d,
-      solicitacoes: d.solicitacoes.map(s =>
+    setData(d => {
+      const newSol = d.solicitacoes.map(s =>
         s.id === id ? { ...s, status: 'concluido', progress: 100 } : s
-      ),
-    }))
+      );
+      saveRequests(newSol);
+      return { ...d, solicitacoes: newSol };
+    })
   }
 
   const rejectDelivery = (id, comment) => {
-    setData(d => ({
-      ...d,
-      solicitacoes: d.solicitacoes.map(s =>
+    setData(d => {
+      const newSol = d.solicitacoes.map(s =>
         s.id === id ? { 
           ...s, 
           status: 'execucao', 
@@ -165,8 +169,10 @@ export default function AdminPage() {
             user: 'Admin' 
           }] 
         } : s
-      ),
-    }))
+      );
+      saveRequests(newSol);
+      return { ...d, solicitacoes: newSol };
+    })
   }
 
   const pendingCount = role === 'colaborador' ? 0 : data.solicitacoes.filter(s => s.status === 'novo' || s.status === 'pendente_aprovacao').length
