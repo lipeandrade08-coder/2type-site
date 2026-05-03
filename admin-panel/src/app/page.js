@@ -136,7 +136,7 @@ export default function AdminPage() {
     setData(d => ({
       ...d,
       solicitacoes: d.solicitacoes.map(s =>
-        s.id === id ? { ...s, status: 'execucao', ...updates } : s
+        s.id === id ? { ...s, status: 'disponivel', ...updates } : s
       ),
     }))
   }
@@ -181,7 +181,7 @@ export default function AdminPage() {
             {/* Logo */}
             <div style={{ textAlign: 'center', marginBottom: 32 }}>
               <img src="/admin/logo-icon.png" alt="2Type" style={{ width: 64, height: 64, borderRadius: 16, objectFit: 'contain', margin: '0 auto 16px' }} onError={e => { e.target.style.display = 'none' }} />
-              <div className="font-syne" style={{ fontSize: 28, fontWeight: 800, color: 'white' }}>2Type</div>
+              <div className="font-syne" style={{ fontSize: 28, fontWeight: 800, color: 'white' }} translate="no">2Type</div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>Painel Administrativo</div>
             </div>
 

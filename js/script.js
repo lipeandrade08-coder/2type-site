@@ -90,7 +90,7 @@ function getRequests() {
  * Mapeia um status para um label de exibição.
  */
 function getDisplayStatus(status) {
-    const map = { novo: 'Análise', aprovado: 'Aguardando Dev', execucao: 'Em Dev', pendente_aprovacao: 'Revisão Final', concluido: 'Concluído' };
+    const map = { novo: 'Análise', aprovado: 'Aguardando Dev', disponivel: 'Disponível', execucao: 'Em Dev', pendente_aprovacao: 'Revisão Final', concluido: 'Concluído' };
     return map[status] || status;
 }
 
@@ -726,9 +726,36 @@ function updateColabKanban(requests) {
     if(listReviewing) listReviewing.innerHTML = '';
     listDone.innerHTML = '';
 
+    const colabFilterType = document.getElementById('colabFilterType')?.value;
+    const colabFilterValue = parseFloat(document.getElementById('colabFilterValue')?.value) || 0;
+    const colabFilterDeadline = document.getElementById('colabFilterDeadline')?.value;
+
+    const myRequests = requests.filter(r => {
+        // Base visibility logic
+        const isMine = r.assignedToEmail === currentColab.email || r.assignedTo === currentColab.name;
+        const isAvailable = r.status === 'disponivel';
+        
+        if (!isMine && !isAvailable) return false;
+
+        // Apply Filters
+        if (colabFilterType && r.serviceType !== colabFilterType) return false;
+        
+        if (colabFilterValue > 0) {
+            const rawValue = String(r.paymentValue || '0').replace(/\D/g, '');
+            const numericValue = parseInt(rawValue) || 0;
+            if (numericValue < colabFilterValue) return false;
+        }
+
+        if (colabFilterDeadline && r.devDeadline) {
+            if (new Date(r.devDeadline) > new Date(colabFilterDeadline)) return false;
+        }
+
+        return true;
+    });
+
     let counts = { proposals: 0, available: 0, inProgress: 0, reviewing: 0, done: 0 };
-    requests.forEach(req => {
-        if (req.status === 'aprovado') {
+    myRequests.forEach(req => {
+        if (req.status === 'aprovado' || req.status === 'disponivel') {
             if (req.financialProposal && req.financialProposal.status === 'aguardando_confirmacao') {
                 counts.proposals++;
                 if(listProposals) listProposals.appendChild(createTaskCard(req, 'proposal'));
@@ -758,6 +785,13 @@ function updateColabKanban(requests) {
         if(countRev) countRev.textContent = counts.reviewing;
         document.getElementById('countDone').textContent = counts.done;
     }
+}
+
+function clearColabFilters() {
+    document.getElementById('colabFilterType').value = '';
+    document.getElementById('colabFilterValue').value = '';
+    document.getElementById('colabFilterDeadline').value = '';
+    updateDashboards();
 }
 
 // Update Dashboards UI
@@ -913,7 +947,7 @@ function createTaskCard(req, actionType) {
                 <i data-lucide="banknote" style="width:16px; color:var(--green)"></i>
                 <div>
                     <div style="font-size:10px; color:var(--text3); text-transform:uppercase; font-weight:700">Seu Repasse</div>
-                    <div style="font-size:18px; color:var(--green); font-weight:800; font-family:'Syne', sans-serif">R$ ${parseFloat(req.paymentValue).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                    <div style="font-size:18px; color:var(--green); font-weight:800; font-family:'Syne', sans-serif">R$ ${req.paymentValue ? (String(req.paymentValue).includes(',') ? req.paymentValue : req.paymentValue + ',00') : '0,00'}</div>
                 </div>
             </div>
         ` : ''}

@@ -138,17 +138,18 @@ export default function SolicitacoesTab({ solicitacoes, onAdd, onApprove, role, 
                             <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#10b981', fontWeight: 700 }}>R$</span>
                             <input 
                               className="glass-input" 
-                              style={{ paddingLeft: 40, color: '#10b981', fontWeight: 800, fontSize: 18 }} 
-                              placeholder="0,00" 
+                              style={{ paddingLeft: 40, paddingRight: 40, color: '#10b981', fontWeight: 800, fontSize: 18 }} 
+                              placeholder="0" 
                               value={approveForm.paymentValue} 
                               onChange={e => {
                                 let val = e.target.value.replace(/\D/g, '');
                                 if (val) {
-                                  val = (parseInt(val) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                                  val = parseInt(val).toLocaleString('pt-BR');
                                 }
                                 setApproveForm(p => ({ ...p, paymentValue: val }));
                               }} 
                             />
+                            <span style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', color: 'rgba(16, 185, 129, 0.4)', fontWeight: 600 }}>,00</span>
                          </div>
                       </FormField>
                     </div>

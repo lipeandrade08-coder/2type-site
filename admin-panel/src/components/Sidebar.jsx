@@ -27,7 +27,7 @@ export default function Sidebar({ activeTab, setActiveTab, pendingCount, support
         <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
           <img src="/admin/logo-icon.png" alt="2Type" style={{ width: 36, height: 36, borderRadius: 8, objectFit: 'contain' }} onError={e => { e.target.style.display = 'none' }} />
           <div>
-            <div className="font-syne" style={{ fontSize: 18, fontWeight: 800, color: 'white', lineHeight: 1 }}>2Type</div>
+            <div className="font-syne" style={{ fontSize: 18, fontWeight: 800, color: 'white', lineHeight: 1 }} translate="no">2Type</div>
             <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Admin Panel</div>
           </div>
         </a>

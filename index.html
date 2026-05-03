@@ -1189,6 +1189,36 @@
                         </button>
                     </div>
 
+                    </div>
+                    
+                    <!-- COLAB FILTERS -->
+                    <div class="colab-filters fade-in delay-2" style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap; background:rgba(255,255,255,0.03); padding:16px; border-radius:12px; border:1px solid var(--border);">
+                        <div style="flex:1; min-width:180px;">
+                            <label style="display:block; font-size:10px; color:var(--text3); text-transform:uppercase; margin-bottom:6px; font-weight:700;">Tipo de Serviço</label>
+                            <select id="colabFilterType" class="glass-input" style="height:38px; font-size:13px; padding:0 12px;" onchange="updateDashboards()">
+                                <option value="">Todos os Serviços</option>
+                                <option value="Landing Page">Landing Page</option>
+                                <option value="E-commerce">E-commerce</option>
+                                <option value="Web App / SaaS">Web App / SaaS</option>
+                                <option value="Automação / IA">Automação / IA</option>
+                                <option value="Branding / Identidade">Branding / Identidade</option>
+                            </select>
+                        </div>
+                        <div style="flex:1; min-width:180px;">
+                            <label style="display:block; font-size:10px; color:var(--text3); text-transform:uppercase; margin-bottom:6px; font-weight:700;">Valor Mínimo (R$)</label>
+                            <input type="number" id="colabFilterValue" class="glass-input" style="height:38px; font-size:13px;" placeholder="Ex: 1000" oninput="updateDashboards()">
+                        </div>
+                        <div style="flex:1; min-width:180px;">
+                            <label style="display:block; font-size:10px; color:var(--text3); text-transform:uppercase; margin-bottom:6px; font-weight:700;">Prazo Máximo</label>
+                            <input type="date" id="colabFilterDeadline" class="glass-input" style="height:38px; font-size:13px;" onchange="updateDashboards()">
+                        </div>
+                        <div style="display:flex; align-items:flex-end;">
+                            <button class="btn-ghost" onclick="clearColabFilters()" style="height:38px; font-size:12px; padding:0 16px; border-color:rgba(239,68,68,0.2); color:#f87171;">
+                                <i data-lucide="filter-x" style="width:14px; margin-right:6px; vertical-align:-2px;"></i>Limpar
+                            </button>
+                        </div>
+                    </div>
+
                     <div id="colabViewKanban">
                         <div class="colab-grid"
                             style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 24px;">
