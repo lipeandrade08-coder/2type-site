@@ -720,35 +720,42 @@ function updateColabKanban(requests) {
     const listDone = document.getElementById('listDone');
     if (!listAvailable || !listInProgress || !listDone) return;
 
-    if(listProposals) listProposals.innerHTML = '';
     listAvailable.innerHTML = '';
     listInProgress.innerHTML = '';
     if(listReviewing) listReviewing.innerHTML = '';
     listDone.innerHTML = '';
 
     const colabFilterType = document.getElementById('colabFilterType')?.value;
-    const colabFilterValue = parseFloat(document.getElementById('colabFilterValue')?.value) || 0;
-    const colabFilterDeadline = document.getElementById('colabFilterDeadline')?.value;
+    const colabFilterStatus = document.getElementById('colabFilterStatus')?.value;
+    const colabFilterPriority = document.getElementById('colabFilterPriority')?.value;
+    const colabSearch = document.getElementById('colabSearchInput')?.value.toLowerCase() || '';
 
     const myRequests = requests.filter(r => {
         // Base visibility logic
         const isMine = r.assignedToEmail === currentColab.email || r.assignedTo === currentColab.name;
-        const isAvailable = r.status === 'disponivel';
+        const isAvailable = r.status === 'disponivel' || r.status === 'aprovado';
         
         if (!isMine && !isAvailable) return false;
 
-        // Apply Filters
-        if (colabFilterType && r.serviceType !== colabFilterType) return false;
-        
-        if (colabFilterValue > 0) {
-            const rawValue = String(r.paymentValue || '0').replace(/\D/g, '');
-            const numericValue = parseInt(rawValue) || 0;
-            if (numericValue < colabFilterValue) return false;
+        // Apply Search Filter
+        if (colabSearch) {
+            const searchStr = `${r.clientName} ${r.serviceType} ${r.id} ${r.title || ''}`.toLowerCase();
+            if (!searchStr.includes(colabSearch)) return false;
         }
 
-        if (colabFilterDeadline && r.devDeadline) {
-            if (new Date(r.devDeadline) > new Date(colabFilterDeadline)) return false;
+        // Apply Category/Type Filter
+        if (colabFilterType && r.serviceType !== colabFilterType) return false;
+        
+        // Apply Status Filter
+        if (colabFilterStatus) {
+            if (colabFilterStatus === 'pendente' && (r.status !== 'disponivel' && r.status !== 'aprovado')) return false;
+            if (colabFilterStatus === 'andamento' && r.status !== 'execucao') return false;
+            if (colabFilterStatus === 'revisar' && r.status !== 'pendente_aprovacao') return false;
+            if (colabFilterStatus === 'concluido' && r.status !== 'concluido') return false;
         }
+
+        // Apply Priority Filter
+        if (colabFilterPriority && r.priority !== colabFilterPriority) return false;
 
         return true;
     });
@@ -756,13 +763,8 @@ function updateColabKanban(requests) {
     let counts = { proposals: 0, available: 0, inProgress: 0, reviewing: 0, done: 0 };
     myRequests.forEach(req => {
         if (req.status === 'aprovado' || req.status === 'disponivel') {
-            if (req.financialProposal && req.financialProposal.status === 'aguardando_confirmacao') {
-                counts.proposals++;
-                if(listProposals) listProposals.appendChild(createTaskCard(req, 'proposal'));
-            } else {
-                counts.available++;
-                listAvailable.appendChild(createTaskCard(req, 'accept'));
-            }
+            counts.available++;
+            listAvailable.appendChild(createTaskCard(req, 'accept'));
         } else if (req.status === 'execucao') {
             counts.inProgress++;
             const isMine = req.assignedToEmail === currentColab?.email || req.assignedTo === currentColab?.name;
@@ -777,8 +779,6 @@ function updateColabKanban(requests) {
     });
 
     if (document.getElementById('countAvailable')) {
-        const countProp = document.getElementById('countProposals');
-        if(countProp) countProp.textContent = counts.proposals;
         document.getElementById('countAvailable').textContent = counts.available;
         document.getElementById('countInProgress').textContent = counts.inProgress;
         const countRev = document.getElementById('countReviewing');
@@ -788,9 +788,11 @@ function updateColabKanban(requests) {
 }
 
 function clearColabFilters() {
-    document.getElementById('colabFilterType').value = '';
-    document.getElementById('colabFilterValue').value = '';
-    document.getElementById('colabFilterDeadline').value = '';
+    const ids = ['colabFilterType', 'colabFilterStatus', 'colabFilterPriority', 'colabSearchInput'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
     updateDashboards();
 }
 
@@ -1925,8 +1927,9 @@ function initRoulette() {
 function animateRoulette(el, target, suffix) {
     const height = el.offsetHeight || 50;
 
-    // Fix centering conflict: align container to top
-    el.style.alignItems = 'flex-start';
+    el.style.display = 'flex';
+    el.style.flexDirection = 'column';
+    el.style.alignItems = 'center';
     el.style.justifyContent = 'flex-start';
 
     // Create a stack of numbers for the "spin" effect

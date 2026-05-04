@@ -291,11 +291,12 @@
         if (!en.isIntersecting || en.target.dataset.counted) return;
         en.target.dataset.counted = '1';
         const el = en.target;
-        const target = +el.dataset.target, suffix = el.dataset.suffix || '';
+        const target = +el.dataset.target;
         const inner = el.querySelector('span') || el;
         const t0 = performance.now(), dur = 1600;
         (function step(now) {
           const p = Math.min((now-t0)/dur, 1);
+          const suffix = el.dataset.suffix || '';
           inner.textContent = Math.round((p===1?1:1-Math.pow(2,-10*p)) * target) + suffix;
           if (p < 1) raf(step);
         })(t0);

@@ -32,17 +32,12 @@
         rel="stylesheet">
     <!-- Main Style -->
     <link rel="stylesheet" href="css/style.css">
-    <!-- Scroll Transition 3D -->
-    <link rel="stylesheet" href="css/scroll-transition3d.css">
+
     <!-- Cinematic Animations -->
     <link rel="stylesheet" href="css/animations.css">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Three.js -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.min.js"></script>
-    <!-- GSAP + ScrollTrigger -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
 </head>
 
 <body>
@@ -140,57 +135,7 @@
 
     </div>
 
-    <!-- ═══════════════ MAPA DE SERVIÇOS 3D ═══════════════ -->
-    <div id="scroll-transition" class="section">
-      <div id="st3d-spacer"></div>
-      <div id="st3d-inner">
 
-        <!-- Background glows -->
-        <div class="st3d-bg-glow st3d-bg-glow-1"></div>
-        <div class="st3d-bg-glow st3d-bg-glow-2"></div>
-
-        <!-- Canvas 2D: partículas neon (inserido via JS) -->
-        <div id="st3d-canvas-wrap"></div>
-
-        <!-- Loader -->
-        <div id="st3d-loader">
-          <div class="st3d-loader-ring"></div>
-          <span class="st3d-loader-text">Carregando experiência&hellip;</span>
-        </div>
-
-        <!-- Tagline -->
-        <div class="st3d-tagline">
-          <div class="st3d-tagline-eyebrow">O que a 2Type oferece</div>
-          <div class="st3d-tagline-title">Soluções completas para<br>o <em>seu</em> negócio</div>
-        </div>
-
-        <!-- ── LOGO "2" ANIMADA (centro do mapa) ── -->
-        <div id="st3d-logo-two">
-          <div class="st3d-logo-inner">
-            <!-- Ring giratório -->
-            <div class="st3d-logo-ring"></div>
-            <!-- Vidro/glass circle -->
-            <div class="st3d-logo-glass"></div>
-            <!-- Órbitas de pontos -->
-            <div class="st3d-logo-orbit"></div>
-            <div class="st3d-logo-orbit-2"></div>
-            <!-- Numeral substituído por Imagem 3D -->
-            <img src="assets/img/logo-smoke-transparent.png" class="st3d-logo-image smoke-animated" alt="2Type Logo 3D">
-          </div>
-        </div>
-
-        <!-- Nós do mapa (populados via JS) -->
-        <div id="st3d-map"></div>
-
-        <!-- Scroll cue -->
-        <div class="st3d-scroll-cue">
-          <span class="st3d-scroll-cue-text">Descubra nossos serviços</span>
-          <div class="st3d-scroll-mouse"><div class="st3d-scroll-wheel"></div></div>
-        </div>
-
-      </div>
-    </div>
-    <!-- ════════════ END MAPA DE SERVIÇOS 3D ════════════ -->
 
     <!-- ═══════════════════════════════ SERVICES ═══════════════════════════════ -->
     <div id="services" class="section">
@@ -1151,28 +1096,28 @@
                     </div>
 
                     <!-- COLAB METRICS -->
-                    <div class="admin-metrics fade-in delay-1" style="margin-top:24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
-                        <div class="admin-metric">
+                    <div class="fade-in delay-1" style="margin-top:24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px;">
+                        <div class="colab-metric-card">
                             <div class="am-label">Faturamento Total</div>
                             <div class="am-val" id="colabMetricTotal">R$ 0</div>
                         </div>
-                        <div class="admin-metric">
+                        <div class="colab-metric-card">
                             <div class="am-label">Faturamento do Mês</div>
                             <div class="am-val" id="colabMetricMonth">R$ 0</div>
                         </div>
-                        <div class="admin-metric">
+                        <div class="colab-metric-card">
                             <div class="am-label">Horas Registradas</div>
                             <div class="am-val" id="colabMetricHours">0h</div>
                         </div>
-                        <div class="admin-metric" style="display:flex; flex-direction:column; justify-content:space-between;">
+                        <div class="colab-metric-card" style="display:flex; flex-direction:column; justify-content:space-between;">
                             <div class="am-label" style="display:flex; justify-content:space-between; align-items:center;">Meta do Mês <i data-lucide="edit-2" style="width:12px; cursor:pointer; color:var(--accent2);" onclick="editColabMeta()"></i></div>
-                            <div class="am-val" id="colabMetricMeta" style="font-size:16px; margin:4px 0;">R$ 0 / <span id="colabMetaTarget">R$ 5.000</span></div>
-                            <div class="progress-bar" style="height:6px; margin-bottom:0;"><div id="colabMetaProgress" class="progress-fill" style="width:0%"></div></div>
+                            <div class="am-val" id="colabMetricMeta" style="font-size:18px; margin:4px 0;">R$ 0 / <span id="colabMetaTarget" style="opacity:0.6; font-size:14px">R$ 5.000</span></div>
+                            <div class="progress-bar" style="height:6px; margin-bottom:0; background:rgba(255,255,255,0.05);"><div id="colabMetaProgress" class="progress-fill" style="width:0%; background:linear-gradient(90deg, var(--accent1), var(--accent2))"></div></div>
                         </div>
-                        <div class="admin-metric">
+                        <div class="colab-metric-card">
                             <div class="am-label">Score de Performance</div>
-                            <div class="am-val" id="colabMetricScore">100</div>
-                            <div class="am-delta up" id="colabMetricScoreDesc">Status Excelente</div>
+                            <div class="am-val" id="colabMetricScore" style="color:var(--green)">100</div>
+                            <div class="am-delta up" id="colabMetricScoreDesc" style="font-size:11px; margin-top:4px">Status Excelente</div>
                         </div>
                     </div>
 
@@ -1188,15 +1133,19 @@
                             <i data-lucide="star" style="width:15px;height:15px;vertical-align:-3px;margin-right:6px"></i>Meus Feedbacks
                         </button>
                     </div>
-
-                    </div>
                     
                     <!-- COLAB FILTERS -->
-                    <div class="colab-filters fade-in delay-2" style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap; background:rgba(255,255,255,0.03); padding:16px; border-radius:12px; border:1px solid var(--border);">
-                        <div style="flex:1; min-width:180px;">
-                            <label style="display:block; font-size:10px; color:var(--text3); text-transform:uppercase; margin-bottom:6px; font-weight:700;">Tipo de Serviço</label>
-                            <select id="colabFilterType" class="glass-input" style="height:38px; font-size:13px; padding:0 12px;" onchange="updateDashboards()">
-                                <option value="">Todos os Serviços</option>
+                    <div class="colab-filters-wrap fade-in delay-2">
+                        <div class="filter-group colab-search-wrap">
+                            <label>Pesquisar Projetos</label>
+                            <i data-lucide="search"></i>
+                            <input type="text" id="colabSearchInput" placeholder="Ex: Landing Page, Cliente, ID..." onkeyup="updateDashboards()">
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Especialidade</label>
+                            <select id="colabFilterType" class="colab-select-custom" onchange="updateDashboards()">
+                                <option value="">Todas as Demandas</option>
                                 <option value="Landing Page">Landing Page</option>
                                 <option value="E-commerce">E-commerce</option>
                                 <option value="Web App / SaaS">Web App / SaaS</option>
@@ -1204,16 +1153,29 @@
                                 <option value="Branding / Identidade">Branding / Identidade</option>
                             </select>
                         </div>
-                        <div style="flex:1; min-width:180px;">
-                            <label style="display:block; font-size:10px; color:var(--text3); text-transform:uppercase; margin-bottom:6px; font-weight:700;">Valor Mínimo (R$)</label>
-                            <input type="number" id="colabFilterValue" class="glass-input" style="height:38px; font-size:13px;" placeholder="Ex: 1000" oninput="updateDashboards()">
+
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select id="colabFilterStatus" class="colab-select-custom" onchange="updateDashboards()">
+                                <option value="">Qualquer Status</option>
+                                <option value="pendente">Pendentes</option>
+                                <option value="andamento">Em Andamento</option>
+                                <option value="revisar">Em Revisão</option>
+                                <option value="concluido">Concluídos</option>
+                            </select>
                         </div>
-                        <div style="flex:1; min-width:180px;">
-                            <label style="display:block; font-size:10px; color:var(--text3); text-transform:uppercase; margin-bottom:6px; font-weight:700;">Prazo Máximo</label>
-                            <input type="date" id="colabFilterDeadline" class="glass-input" style="height:38px; font-size:13px;" onchange="updateDashboards()">
+
+                        <div class="filter-group">
+                            <label>Prioridade</label>
+                            <select id="colabFilterPriority" class="colab-select-custom" onchange="updateDashboards()">
+                                <option value="">Todas</option>
+                                <option value="alta">Alta</option>
+                                <option value="media">Média</option>
+                                <option value="baixa">Baixa</option>
+                            </select>
                         </div>
                         <div style="display:flex; align-items:flex-end;">
-                            <button class="btn-ghost" onclick="clearColabFilters()" style="height:38px; font-size:12px; padding:0 16px; border-color:rgba(239,68,68,0.2); color:#f87171;">
+                            <button class="btn-ghost" onclick="clearColabFilters()" style="height:42px; font-size:12px; padding:0 16px; border-color:rgba(239,68,68,0.2); color:#f87171; border-radius:12px;">
                                 <i data-lucide="filter-x" style="width:14px; margin-right:6px; vertical-align:-2px;"></i>Limpar
                             </button>
                         </div>
@@ -1221,16 +1183,8 @@
 
                     <div id="colabViewKanban">
                         <div class="colab-grid"
-                            style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 24px;">
+                            style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px;">
                             
-                            <!-- PROPOSTAS PENDENTES -->
-                            <div class="colab-col">
-                                <div class="col-header">
-                                    <h4><i data-lucide="file-text" style="width:16px;margin-right:8px"></i> Propostas</h4>
-                                    <span class="pill" id="countProposals">0</span>
-                                </div>
-                                <div id="listProposals" class="task-list"></div>
-                            </div>
 
                             <!-- DISPONÍVEIS -->
                             <div class="colab-col">
@@ -1885,44 +1839,13 @@
     </div>
     <!-- Scripts -->
     <script src="js/script.js?v=2.0"></script>
-    <script src="js/scroll-transition3d.js"></script>
+
     <!-- Cinematic Animations Engine -->
     <script src="js/animations.js"></script>
     <script>
-      // ── Scroll Transition 3D — Lifecycle & Navigation ──
-
-      function hideLoader() {
-        const loader = document.getElementById('st3d-loader');
-        if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.remove(), 700); }
-      }
-
-      // Route from Hero to Services through 3D transition
       function goToServices() {
-        const home = document.getElementById('home');
-        if (home && home.classList.contains('active')) {
-          showSection('scroll-transition');
-        } else {
-          showSection('services');
-        }
+        showSection('services');
       }
-
-      // Patch showSection to manage 3D scene lifecycle
-      const _origShowSection = window.showSection;
-      window.showSection = function (id) {
-        if (id === 'scroll-transition') {
-          _origShowSection(id);
-          // Double RAF ensures the section is visible and has CSS dimensions
-          requestAnimationFrame(() => requestAnimationFrame(() => {
-            if (window.ST3D) {
-              window.ST3D.init();
-              setTimeout(hideLoader, 900);
-            }
-          }));
-        } else {
-          if (window.ST3D) window.ST3D.destroy();
-          _origShowSection(id);
-        }
-      };
     </script>
 </body>
 

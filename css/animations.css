@@ -1279,16 +1279,18 @@ body {
 
   .hero-stats {
     flex-wrap: wrap;
+    max-width: calc(100% - 40px);
+    margin: 40px auto 0;
   }
 
   .hero-stat {
     min-width: 50%;
-    border-right: none;
+    border-right: 1px solid var(--border) !important;
     border-bottom: 1px solid var(--border);
   }
 
   .hero-stat:nth-child(even) {
-    border-right: none;
+    border-right: none !important;
   }
 
   .features-strip {
@@ -1422,6 +1424,7 @@ body {
 
   .hero-stat {
     min-width: 100%;
+    border-right: none !important;
   }
 
   .hss-grid {
