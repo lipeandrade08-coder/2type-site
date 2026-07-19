@@ -11,6 +11,7 @@ const AVATAR_MAP = {
   'Filipe Andrade':   '🧑‍💻',
   'Henrique Sampaio': '🎨',
   'Davi Borges':      '⚙️',
+  'Gustavo':          '🏗️',
 }
 
 // Map nome → email for chat key
@@ -20,6 +21,7 @@ function colabEmail(nome) {
     'Filipe Andrade':   'filipe@twotype.com',
     'Henrique Sampaio': 'henrique@twotype.com',
     'Davi Borges':      'davi@twotype.com',
+    'Gustavo':          'gustavo@twotype.com',
     'Colaborador':      'colaborador@twotype.com',
   }
   return map[nome] || (nome.toLowerCase().replace(/\s+/g, '') + '@twotype.com')

@@ -83,18 +83,81 @@
         <div class="hero-grid"></div>
         <div class="hero-orb"></div>
 
-        <div class="hero-content">
-            <div class="hero-badge animate-hidden"><span></span>Desenvolvimento sob medida</div>
-            <h1 class="hero-title animate-hidden delay-1">Tecnologia que<br><em class="text-gradient-animate">transforma</em> negócios</h1>
-            <p class="hero-sub animate-hidden delay-2">
-                Da ideia ao produto final — desenvolvemos sistemas, apps e soluções digitais com excelência técnica e
-                design de alto nível.
-            </p>
-            <div class="hero-actions animate-hidden delay-3">
-                <button class="btn-hero" onclick="showSection('request')">Solicitar projeto</button>
-                <button class="btn-hero-outline" onclick="goToServices()">Ver serviços</button>
+        <!-- HERO: Two-column layout -->
+        <div class="hero-two-col">
+
+            <!-- LEFT: text content -->
+            <div class="hero-text-col">
+                <div class="hero-badge animate-hidden"><span></span>Desenvolvimento sob medida</div>
+                <h1 class="hero-title animate-hidden delay-1">Tecnologia que<br><em class="hero-gradient-static">transforma</em> negócios</h1>
+                <p class="hero-sub animate-hidden delay-2">
+                    Da ideia ao produto final — desenvolvemos sistemas, apps e soluções digitais com excelência técnica e design de alto nível.
+                </p>
+                <div class="hero-actions animate-hidden delay-3">
+                    <button class="btn-hero" onclick="showSection('request')">Solicitar projeto</button>
+                    <button class="btn-hero-outline" onclick="goToServices()">Ver serviços</button>
+                </div>
+                <!-- Mini trust badges -->
+                <div class="hero-trust animate-hidden delay-4">
+                    <div class="trust-item"><i data-lucide="shield-check" style="width:14px;height:14px;color:#10b981;"></i><span>Código auditado</span></div>
+                    <div class="trust-dot"></div>
+                    <div class="trust-item"><i data-lucide="clock" style="width:14px;height:14px;color:#a78bfa;"></i><span>Suporte 24h</span></div>
+                    <div class="trust-dot"></div>
+                    <div class="trust-item"><i data-lucide="star" style="width:14px;height:14px;color:#f59e0b;"></i><span>98% satisfação</span></div>
+                </div>
             </div>
-        </div>
+
+            <!-- RIGHT: macOS Window Mockup -->
+            <div class="macos-mockup-wrap animate-hidden delay-3">
+                <div class="macos-ambient-glow"></div>
+                <div class="macos-window">
+                    <!-- Title Bar -->
+                    <div class="macos-titlebar">
+                        <div class="macos-dots">
+                            <span class="dot dot-red"></span>
+                            <span class="dot dot-yellow"></span>
+                            <span class="dot dot-green"></span>
+                        </div>
+                        <div class="macos-title-text">2Type — Studio</div>
+                        <div class="macos-titlebar-right">
+                            <span class="macos-icon-btn"><i data-lucide="minus" style="width:11px;height:11px;"></i></span>
+                            <span class="macos-icon-btn"><i data-lucide="maximize-2" style="width:11px;height:11px;"></i></span>
+                        </div>
+                    </div>
+                    <!-- Toolbar / Address Bar -->
+                    <div class="macos-toolbar">
+                        <div class="macos-nav-arrows">
+                            <i data-lucide="chevron-left" style="width:14px;height:14px;opacity:.4;"></i>
+                            <i data-lucide="chevron-right" style="width:14px;height:14px;opacity:.4;"></i>
+                        </div>
+                        <div class="macos-addressbar">
+                            <i data-lucide="lock" style="width:11px;height:11px;color:#10b981;"></i>
+                            <span>2type.dev</span>
+                        </div>
+                        <div class="macos-nav-share">
+                            <i data-lucide="share" style="width:14px;height:14px;opacity:.4;"></i>
+                        </div>
+                    </div>
+                    <!-- Video Screen -->
+                    <div class="macos-screen">
+                        <video
+                            class="macos-video"
+                            src="assets/img/videohero.mp4"
+                            autoplay
+                            muted
+                            loop
+                            playsinline
+                            preload="metadata"
+                            aria-label="Demonstração do produto 2Type">
+                        </video>
+                        <div class="macos-screen-glare"></div>
+                    </div>
+                </div>
+                <!-- Subtle reflection below window -->
+                <div class="macos-reflection"></div>
+            </div>
+
+        </div><!-- end .hero-two-col -->
 
         <div class="hero-stats animate-hidden delay-4">
             <div class="hero-stat">
@@ -159,7 +222,14 @@
                             class="tag">Node.js</span><span class="tag">PostgreSQL</span>
                     </div>
                 </div>
-                <div class="service-card animate-hidden delay-1">
+                <div class="service-card service-card--soon animate-hidden delay-1">
+                    <div class="soon-overlay">
+                        <div class="soon-badge">
+                            <i data-lucide="clock" class="soon-icon"></i>
+                            <span>Em breve</span>
+                        </div>
+                        <p class="soon-desc">Estamos preparando algo incrível. Em breve disponível.</p>
+                    </div>
                     <div class="service-icon"><i data-lucide="smartphone"></i></div>
                     <h3>Aplicativos Mobile</h3>
                     <p>Apps nativos e híbridos para iOS e Android. Oferecemos experiências nativas imersivas com alta
@@ -169,7 +239,14 @@
                             class="tag">iOS</span><span class="tag">Android</span>
                     </div>
                 </div>
-                <div class="service-card animate-hidden delay-2">
+                <div class="service-card service-card--soon animate-hidden delay-2">
+                    <div class="soon-overlay">
+                        <div class="soon-badge">
+                            <i data-lucide="clock" class="soon-icon"></i>
+                            <span>Em breve</span>
+                        </div>
+                        <p class="soon-desc">Estamos preparando algo incrível. Em breve disponível.</p>
+                    </div>
                     <div class="service-icon"><i data-lucide="waypoints"></i></div>
                     <h3>Integrações e APIs</h3>
                     <p>Conectamos seu ecossistema: desenvolvemos APIs REST e GraphQL de alta performance e integramos
@@ -179,7 +256,14 @@
                             class="tag">Webhooks</span><span class="tag">OAuth</span>
                     </div>
                 </div>
-                <div class="service-card animate-hidden delay-3">
+                <div class="service-card service-card--soon animate-hidden delay-3">
+                    <div class="soon-overlay">
+                        <div class="soon-badge">
+                            <i data-lucide="clock" class="soon-icon"></i>
+                            <span>Em breve</span>
+                        </div>
+                        <p class="soon-desc">Estamos preparando algo incrível. Em breve disponível.</p>
+                    </div>
                     <div class="service-icon"><i data-lucide="bot"></i></div>
                     <h3>Automações & IA</h3>
                     <p>Impulsione operações com Inteligência Artificial, LLMs, Chatbots integrados e automações
@@ -189,7 +273,14 @@
                             class="tag">n8n</span><span class="tag">Machine Learning</span>
                     </div>
                 </div>
-                <div class="service-card animate-hidden delay-4">
+                <div class="service-card service-card--soon animate-hidden delay-4">
+                    <div class="soon-overlay">
+                        <div class="soon-badge">
+                            <i data-lucide="clock" class="soon-icon"></i>
+                            <span>Em breve</span>
+                        </div>
+                        <p class="soon-desc">Estamos preparando algo incrível. Em breve disponível.</p>
+                    </div>
                     <div class="service-icon"><i data-lucide="cloud"></i></div>
                     <h3>Arquitetura Cloud</h3>
                     <p>Migração e estruturação em Nuvem. Deploy automatizado (CI/CD), containers, alta disponibilidade e
@@ -199,7 +290,14 @@
                             class="tag">Kubernetes</span><span class="tag">Vercel</span>
                     </div>
                 </div>
-                <div class="service-card animate-hidden delay-5">
+                <div class="service-card service-card--soon animate-hidden delay-5">
+                    <div class="soon-overlay">
+                        <div class="soon-badge">
+                            <i data-lucide="clock" class="soon-icon"></i>
+                            <span>Em breve</span>
+                        </div>
+                        <p class="soon-desc">Estamos preparando algo incrível. Em breve disponível.</p>
+                    </div>
                     <div class="service-icon"><i data-lucide="layout-dashboard"></i></div>
                     <h3>ERPs Customizados</h3>
                     <p>Crie um sistema de gestão desenhado perfeitamente para as suas regras de negócio. Gestão
@@ -342,28 +440,6 @@
             </div>
 
             <div class="services-grid animate-hidden delay-2" style="margin-top: 64px;">
-                <!-- Henrique Sampaio -->
-                <div class="service-card member-card">
-                    <div class="service-icon"><i data-lucide="palette"></i></div>
-                    <div class="member-photo-wrap">
-                        <img src="assets/img/henrique.jpg" alt="Henrique Sampaio" class="member-photo">
-                    </div>
-                    <h3>Henrique Sampaio</h3>
-                    <p class="member-role">Publicidade, Tecnologia & UI/UX</p>
-                    <div class="member-bio">
-                        Natural de Guaratinguetá e com 32 anos, Henrique concentra 13 anos de experiência unindo o
-                        mercado de tecnologia e o marketing. Ele atua como a ponte estratégica entre o desenvolvimento
-                        do software e a experiência do cliente final, focado em criar interfaces visuais e estratégias
-                        digitais voltadas para a conversão. Na equipe, Henrique garante que os sistemas desenvolvidos
-                        sejam intuitivos, focados na jornada do usuário e totalmente alinhados aos objetivos reais de
-                        mercado.
-                    </div>
-                    <div class="service-tags">
-                        <span class="tag">UI/UX</span><span class="tag">Marketing</span><span
-                            class="tag">Publicidade</span><span class="tag">Google Ads</span>
-                    </div>
-                </div>
-
                 <!-- Davi Borges -->
                 <div class="service-card member-card">
                     <div class="service-icon"><i data-lucide="cpu" style="color:var(--accent2)"></i></div>
@@ -386,6 +462,23 @@
                     <div class="service-tags">
                         <span class="tag">Fullstack</span><span class="tag">.NET</span><span class="tag">N8N</span><span
                             class="tag">Python</span><span class="tag">Power Apps</span>
+                    </div>
+                </div>
+
+                <!-- Gustavo -->
+                <div class="service-card member-card">
+                    <div class="service-icon"><i data-lucide="server" style="color:var(--accent1)"></i></div>
+                    <div class="member-photo-wrap">
+                        <img src="assets/img/gustavo.jpg" alt="Gustavo" class="member-photo">
+                    </div>
+                    <h3>Gustavo</h3>
+                    <p class="member-role">Arquitetura de Software & Especialista em Soluções</p>
+                    <div class="member-bio">
+                        <p>Aos 31 anos e natural de Volta Redonda, Gustavo une a maturidade de mercado com uma visão técnica apurada. Graduado em Análise e Desenvolvimento de Sistemas, ele é peça-chave na construção de arquiteturas de software sólidas e eficientes.</p>
+                        <p style="margin-top:12px">Com foco total em transformar problemas complexos em sistemas funcionais, ele garante que cada linha de código na 2type entregue o máximo de performance e valor para nossos clientes.</p>
+                    </div>
+                    <div class="service-tags">
+                        <span class="tag">Software Architect</span><span class="tag">ADS</span><span class="tag">Backend</span><span class="tag">Clean Code</span><span class="tag">Performance</span>
                     </div>
                 </div>
             </div>

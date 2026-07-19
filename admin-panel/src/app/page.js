@@ -19,6 +19,7 @@ const INITIAL_DATA = {
     { id: 2, nome: 'Filipe Andrade',   cargo: 'Fullstack & UI/UX',         foto: '/admin/team/filipe.jpg',   status: 'em projeto',  habilidades: ['React', 'Next.js', 'Node.js', 'Figma']    },
     { id: 3, nome: 'Henrique Sampaio', cargo: 'UI/UX & Marketing Digital', foto: '/admin/team/henrique.jpg', status: 'disponível',  habilidades: ['UI/UX', 'Figma', 'Google Ads', 'SEO']     },
     { id: 4, nome: 'Davi Borges',      cargo: 'Fullstack & Automação',     foto: '/admin/team/davi.jpg',     status: 'em projeto',  habilidades: ['Fullstack', '.NET', 'N8N', 'Power Apps']  },
+    { id: 5, nome: 'Gustavo',           cargo: 'Arquitetura & Soluções',    foto: '/admin/team/gustavo.jpg',  status: 'disponível',  habilidades: ['Arquitetura', 'Clean Code', 'Performance', 'ADS'] },
   ],
   faturamento: {
     entradas: [
@@ -42,6 +43,7 @@ const INITIAL_DATA = {
     { id: 3, nome: 'Core Banking API',            cliente: 'Fintech Alpha',    data: '2025-04-05', dev: 'Marcos Rodrigues', status: 'Concluído',   valor: 9500  },
     { id: 4, nome: 'Dashboard BI Metabase',       cliente: 'B2B SaaS Co.',    data: '2025-03-28', dev: 'Davi Borges',      status: 'Concluído',   valor: 8500  },
     { id: 5, nome: 'Sistema de Agendamento IA',   cliente: 'Grupo MedCorp',   data: '2025-05-10', dev: 'Filipe Andrade',   status: 'Planejamento',valor: 14000 },
+    { id: 6, nome: 'Arquitetura Core Banking',     cliente: 'Fintech Alpha',   data: '2025-05-20', dev: 'Gustavo',          status: 'Em Dev',       valor: 16000 },
   ],
   solicitacoes: [],
 }
@@ -114,8 +116,11 @@ export default function AdminPage() {
     } else if (loginForm.user === 'colaborador@twotype.com' && loginForm.pass === 'colab123') {
       setAuthed(true)
       setRole('colaborador')
+    } else if (loginForm.user === 'gustavo@twotype.com' && loginForm.pass === 'gustavo123') {
+      setAuthed(true)
+      setRole('colaborador')
     } else {
-      setLoginForm(f => ({ ...f, error: 'Credenciais inválidas. Tente admin@twotype.com / admin123 ou colaborador@twotype.com / colab123' }))
+      setLoginForm(f => ({ ...f, error: 'Credenciais inválidas. Tente admin@twotype.com / admin123 ou gustavo@twotype.com / gustavo123' }))
     }
   }
 
@@ -225,8 +230,8 @@ export default function AdminPage() {
             </form>
 
             <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(255,255,255,0.03)', borderRadius: 10, fontSize: 12, color: 'rgba(255,255,255,0.35)', textAlign: 'center' }}>
-              Demo: admin@twotype.com / admin123<br />
-              Colab: colaborador@twotype.com / colab123
+              Admin: admin@twotype.com / admin123<br />
+              Gustavo: gustavo@twotype.com / gustavo123
             </div>
 
             <a href="/" style={{ display: 'block', textAlign: 'center', marginTop: 24, fontSize: 13, color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>

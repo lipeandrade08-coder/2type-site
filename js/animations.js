@@ -382,20 +382,10 @@
   /* ─────────────────────────────────────────────
      11. TYPEWRITER
   ───────────────────────────────────────────── */
+  /* TYPEWRITER DESATIVADO — título fixo conforme solicitado */
   function initTypewriter() {
-    const em = document.querySelector('.hero-title em');
-    if (!em) return;
-    const words = ['transforma','acelera','escala','evolui','conecta'];
-    let wi=0, ci=0, del=false;
-    const cursor = document.createElement('span');
-    cursor.className = 'typewriter-cursor';
-    em.parentNode.insertBefore(cursor, em.nextSibling);
-    function tick() {
-      const w = words[wi];
-      if (!del) { em.textContent=w.slice(0,++ci); if(ci===w.length){del=true;return setTimeout(tick,1900);} setTimeout(tick,95); }
-      else { em.textContent=w.slice(0,--ci); if(ci===0){del=false;wi=(wi+1)%words.length;return setTimeout(tick,380);} setTimeout(tick,50); }
-    }
-    setTimeout(tick, 1800);
+    // desativado — o título fica estático
+    return;
   }
 
   /* ─────────────────────────────────────────────
@@ -405,21 +395,51 @@
     if (isMobile()) return;
     const home = document.getElementById('home');
     if (!home) return;
-    let mx=0, my=0, pending=false;
+
+    let mx = 0, my = 0, pending = false;
+    // For macOS window smooth tilt
+    let winRY = -6, winRX = 2;
+    let targetRY = -6, targetRX = 2;
+    let animFrame = null;
+
+    const macosWin = home.querySelector('.macos-window');
+
+    function tickMacOS() {
+      winRY += (targetRY - winRY) * 0.08;
+      winRX += (targetRX - winRX) * 0.08;
+      if (macosWin) {
+        macosWin.style.transform = `rotateY(${winRY.toFixed(2)}deg) rotateX(${winRX.toFixed(2)}deg)`;
+      }
+      animFrame = raf(tickMacOS);
+    }
+    tickMacOS();
+
     home.addEventListener('mousemove', e => {
-      mx = e.clientX/window.innerWidth-.5;
-      my = e.clientY/window.innerHeight-.5;
-      if (!pending) { pending=true; raf(() => {
-        const orb = home.querySelector('.hero-orb');
-        if(orb) orb.style.transform=`translateX(calc(-50% + ${mx*26}px)) translateY(${my*16}px)`;
-        home.querySelectorAll('.hero-float-icon').forEach((el,i)=>{
-          const d=.25+(i%3)*.15;
-          el.style.translate=`${mx*18*d}px ${my*14*d}px`;
+      mx = e.clientX / window.innerWidth - 0.5;
+      my = e.clientY / window.innerHeight - 0.5;
+      // macOS window tilt: subtle range
+      targetRY = -4 + mx * 10;
+      targetRX = 2 - my * 6;
+      if (!pending) {
+        pending = true;
+        raf(() => {
+          const orb = home.querySelector('.hero-orb');
+          if (orb) orb.style.transform = `translateX(calc(-50% + ${mx * 26}px)) translateY(${my * 16}px)`;
+          home.querySelectorAll('.hero-float-icon').forEach((el, i) => {
+            const d = 0.25 + (i % 3) * 0.15;
+            el.style.translate = `${mx * 18 * d}px ${my * 14 * d}px`;
+          });
+          pending = false;
         });
-        pending=false;
-      }); }
-    }, { passive:true });
+      }
+    }, { passive: true });
+
+    home.addEventListener('mouseleave', () => {
+      targetRY = -6;
+      targetRX = 2;
+    });
   }
+
 
   /* ─────────────────────────────────────────────
      13. STAGGER GRIDS
@@ -459,7 +479,7 @@
     initScrollProgress();
     initBlobs();
     initHeroCanvas();
-    initTypewriter();
+    // initTypewriter desativado — título fixo
     injectShowcaseSection();
     applyStaggerReveal();
     injectTechMarquee();

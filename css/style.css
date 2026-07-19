@@ -288,6 +288,27 @@ nav {
   }
 }
 
+/* ── HERO TWO-COLUMN ── */
+.hero-two-col {
+  position: relative;
+  z-index: 2;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: clamp(90px, 12vw, 140px) clamp(16px, 4vw, 50px) 60px;
+  display: grid;
+  grid-template-columns: 4fr 8fr;
+  align-items: center;
+  gap: clamp(32px, 4vw, 60px);
+}
+
+/* ── HERO TEXT COLUMN ── */
+.hero-text-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
 .hero-content {
   position: relative;
   z-index: 2;
@@ -299,6 +320,277 @@ nav {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+/* ── TRUST BADGES ── */
+.hero-trust {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text3);
+  font-weight: 500;
+}
+
+.trust-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--border2);
+}
+
+/* ── macOS WINDOW MOCKUP ── */
+.macos-mockup-wrap {
+  position: relative;
+  width: 100%;
+  perspective: 1200px;
+  will-change: transform;
+}
+
+.macos-ambient-glow {
+  position: absolute;
+  inset: -20% -10%;
+  background: radial-gradient(ellipse at 50% 55%, rgba(91, 106, 247, 0.3) 0%, rgba(139, 92, 246, 0.18) 35%, transparent 65%);
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  animation: glowPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+  0% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.05); }
+}
+
+.macos-window {
+  position: relative;
+  z-index: 1;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 50px 100px rgba(0, 0, 0, 0.9),
+    0 25px 50px rgba(0, 0, 0, 0.6),
+    0 0 80px rgba(91, 106, 247, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: rotateY(-6deg) rotateX(2deg);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.macos-mockup-wrap:hover .macos-window {
+  transform: rotateY(-1deg) rotateX(1deg) translateY(-4px);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 60px 100px rgba(0, 0, 0, 0.9),
+    0 30px 60px rgba(91, 106, 247, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Titlebar */
+.macos-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  height: 36px;
+  background: linear-gradient(to bottom, #2d2d2f, #252527);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.macos-dots {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  display: block;
+  position: relative;
+  flex-shrink: 0;
+  transition: filter 0.2s;
+}
+
+.dot::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.dot-red    { background: #ff5f57; box-shadow: 0 0 6px rgba(255, 95, 87, 0.5); }
+.dot-yellow { background: #ffbd2e; box-shadow: 0 0 6px rgba(255, 189, 46, 0.5); }
+.dot-green  { background: #28c840; box-shadow: 0 0 6px rgba(40, 200, 64, 0.5); }
+
+.macos-window:hover .dot-red    { filter: brightness(1.1); }
+.macos-window:hover .dot-yellow { filter: brightness(1.1); }
+.macos-window:hover .dot-green  { filter: brightness(1.1); }
+
+.macos-title-text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.2px;
+  pointer-events: none;
+}
+
+.macos-titlebar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.macos-icon-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.macos-icon-btn:hover { background: rgba(255, 255, 255, 0.08); }
+
+/* Toolbar */
+.macos-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  height: 38px;
+  background: #242426;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
+}
+
+.macos-nav-arrows {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.macos-addressbar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 7px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.macos-nav-share {
+  color: rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+}
+
+/* Video Screen */
+.macos-screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: #000;
+}
+
+.macos-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  will-change: transform;
+}
+
+/* Vignette + watermark killer overlay */
+.macos-screen-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  /* Vinheta em todas as bordas */
+  background:
+    /* Borda superior */
+    linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 22%),
+    /* Borda inferior - mais densa para cobrir marca d'agua */
+    linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 18%, transparent 38%),
+    /* Borda esquerda */
+    linear-gradient(to right, rgba(0,0,0,0.3) 0%, transparent 18%),
+    /* Borda direita - cobre marca d'agua de canto */
+    linear-gradient(to left, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 20%, transparent 40%),
+    /* Glare sutil no canto superior esquerdo */
+    radial-gradient(ellipse at 15% 15%, rgba(255,255,255,0.05) 0%, transparent 50%);
+}
+
+/* Reflection below window */
+.macos-reflection {
+  position: relative;
+  height: 40px;
+  margin: 0 20px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.04), transparent);
+  filter: blur(6px);
+  transform: scaleY(-1);
+  mask-image: linear-gradient(to bottom, black, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+  border-radius: 0 0 14px 14px;
+  pointer-events: none;
+}
+
+/* ── RESPONSIVE: Hero Two-Column ── */
+@media (max-width: 1024px) {
+  .hero-two-col {
+    grid-template-columns: 1fr;
+    gap: 60px;
+    text-align: center;
+  }
+
+  .hero-text-col {
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-trust {
+    justify-content: center;
+  }
+
+  .macos-window {
+    transform: none;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .macos-mockup-wrap:hover .macos-window {
+    transform: translateY(-4px);
+  }
 }
 
 .hero-badge {
@@ -340,13 +632,13 @@ nav {
 }
 
 .hero-title {
-  font-size: clamp(38px, 9vw, 110px);
+  font-size: clamp(32px, 5vw, 76px);
   font-weight: 800;
   line-height: 0.95;
-  letter-spacing: clamp(-1.5px, -0.3vw, -4px);
+  letter-spacing: clamp(-1.5px, -0.3vw, -3px);
   color: #fff;
-  margin-bottom: 28px;
-  text-align: center;
+  margin-bottom: 24px;
+  text-align: inherit;
   width: 100%;
 }
 
@@ -358,19 +650,29 @@ nav {
   -webkit-text-fill-color: transparent;
 }
 
+/* Static gradient for hero — sem animação, sem bug */
+.hero-gradient-static {
+  font-style: normal;
+  background: linear-gradient(135deg, #7b8fff 0%, #a78bfa 50%, #d8b4fe 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: none !important;
+}
+
 .hero-sub {
-  font-size: 24px;
+  font-size: clamp(16px, 1.8vw, 20px);
   color: var(--text2);
   font-weight: 300;
-  max-width: 700px;
-  margin: 0 auto 52px;
-  line-height: 1.6;
+  max-width: 540px;
+  margin: 0 0 40px;
+  line-height: 1.65;
 }
 
 .hero-actions {
   display: flex;
   gap: 16px;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
 }
 
@@ -674,8 +976,20 @@ nav {
 
 @media (max-width: 900px) {
   /* Hero Optimization */
-  .hero-content {
+  .hero-two-col {
+    grid-template-columns: 1fr;
+    gap: 48px;
     padding: 100px 20px 60px;
+    text-align: center;
+  }
+
+  .hero-text-col {
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-trust {
+    justify-content: center;
   }
 
   .hero-title {
@@ -687,19 +1001,27 @@ nav {
 
   .hero-sub {
     font-size: 16px;
-    margin-bottom: 40px;
+    margin: 0 auto 36px;
+    max-width: 480px;
   }
 
   .hero-actions {
     flex-direction: column;
     width: 100%;
+    align-items: center;
+    justify-content: center;
   }
 
   .btn-hero,
   .btn-hero-outline {
     width: 100%;
   }
+
+  .macos-window {
+    transform: none !important;
+  }
 }
+
 
 @media (max-width: 600px) {
   .hero-stat {
@@ -874,6 +1196,84 @@ nav {
 }
 
 /* Removido o seletor antigo .service-card:hover::before que usava opacidade */
+
+/* ── "EM BREVE" SERVICE CARD OVERLAY ── */
+.service-card--soon {
+  cursor: default;
+  pointer-events: none;
+}
+
+.service-card--soon:hover {
+  transform: none;
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.12);
+}
+
+.service-card--soon::after {
+  display: none;
+}
+
+.soon-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border-radius: inherit;
+  background: rgba(5, 5, 5, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 32px;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.soon-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(91,106,247,0.18), rgba(139,92,246,0.22));
+  border: 1px solid rgba(139, 92, 246, 0.45);
+  color: #c4b5fd;
+  padding: 10px 22px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Syne', sans-serif;
+  letter-spacing: 1px;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+  animation: soonPulse 3s ease-in-out infinite;
+}
+
+.soon-icon {
+  width: 18px !important;
+  height: 18px !important;
+  color: #a78bfa;
+  animation: soonSpin 6s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.8)) !important;
+}
+
+.soon-desc {
+  font-size: 13px;
+  color: var(--text3);
+  text-align: center;
+  line-height: 1.5;
+  max-width: 240px;
+  letter-spacing: 0.2px;
+}
+
+@keyframes soonPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(139,92,246,0.2), inset 0 1px 0 rgba(255,255,255,0.08); }
+  50%       { box-shadow: 0 0 35px rgba(139,92,246,0.45), inset 0 1px 0 rgba(255,255,255,0.1); border-color: rgba(167,139,250,0.7); }
+}
+
+@keyframes soonSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 
 .service-icon {
   margin: 0 auto 32px;
@@ -3401,4 +3801,50 @@ footer {
 @keyframes slideUpFade {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   60FPS FLUIDITY LOCK & GPU ACCELERATION
+   ═══════════════════════════════════════════════════════ */
+
+/* 1. Global rendering optimization */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* 2. Force Hardware Acceleration (GPU) on animated and interactive elements */
+.service-card, .hss-card, .member-card, .showcase-item, 
+.macos-window, .macos-video, .blob, .hero-float-icon, 
+.marquee-content, .btn-hero, .btn-primary, .animate-hidden, .reveal {
+  /* Promotes element to its own composite layer */
+  transform: translateZ(0); 
+  -webkit-transform: translateZ(0);
+  
+  /* Fixes flickering during transforms */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  
+  /* Tells browser what will change ahead of time */
+  will-change: transform, opacity;
+}
+
+/* 3. Mitigate heavy layout reflows from 'transition: all' on buttons and cards */
+/* This ensures that on hover, only composite properties are transitioned */
+.service-card, .hss-card, .member-card, .btn-hero, .btn-primary {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.4s ease, 
+              background-color 0.4s ease !important;
+}
+
+/* 4. Optimize background blur filters */
+.navbar, .macos-titlebar {
+  will-change: backdrop-filter;
 }

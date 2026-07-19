@@ -28,6 +28,23 @@ if (serviceRequests.length === 0) {
             edital: '',
             messages: [],
             assignedTo: null
+        },
+        {
+            id: Date.now() - 50000,
+            name: 'Ricardo Lima',
+            email: 'ricardo@bank.com',
+            company: 'Fintech Alpha',
+            phone: '(11) 97777-7777',
+            serviceType: '🛡️ Core Banking API',
+            deadline: 'Curto prazo (1 a 3 meses)',
+            budget: 'R$ 50.000 a R$ 100.000',
+            details: 'Integração de APIs de pagamento com alta performance.',
+            status: 'execucao',
+            progress: 35,
+            date: new Date().toLocaleDateString('pt-BR'),
+            history: [],
+            assignedTo: 'Gustavo',
+            paymentValue: 18500
         }
     ];
     saveToStorage('nexcore_requests', serviceRequests);
@@ -1189,18 +1206,22 @@ function doColabLogin() {
     if (email === 'colaborador@twotype.com' && pass === 'colab123') {
         currentColab = { name: email.split('@')[0], email: email };
         saveToStorage('nexcore_colab', currentColab);
-
-        document.getElementById('colabLoginWrap').style.display = 'none';
-        document.getElementById('colabDash').style.display = 'block';
-        document.getElementById('colabWelcomeName').textContent = `Olá, ${currentColab.name}!`;
-        
-        let savedStatus = localStorage.getItem(`nexcore_colab_status_${currentColab.email}`) || 'disponivel';
-        changeColabStatus(savedStatus);
-        
-        updateDashboards();
+    } else if (email === 'gustavo@twotype.com' && pass === 'gustavo123') {
+        currentColab = { name: 'Gustavo', email: email };
+        saveToStorage('nexcore_colab', currentColab);
     } else {
-        alert('Acesso negado. Use: colaborador@twotype.com / colab123');
+        alert('Acesso negado. Use: colaborador@twotype.com / colab123 ou gustavo@twotype.com / gustavo123');
+        return;
     }
+
+    document.getElementById('colabLoginWrap').style.display = 'none';
+    document.getElementById('colabDash').style.display = 'block';
+    document.getElementById('colabWelcomeName').textContent = `Olá, ${currentColab.name}!`;
+    
+    let savedStatus = localStorage.getItem(`nexcore_colab_status_${currentColab.email}`) || 'disponivel';
+    changeColabStatus(savedStatus);
+    
+    updateDashboards();
 }
 
 function doColabLogout() {
@@ -2905,9 +2926,12 @@ function renderSupportTickets() {
 
 // Known collaborators (extend here if more are added)
 const KNOWN_COLABS = [
-    { name: 'Colaborador', email: 'colaborador@twotype.com', role: 'Desenvolvedor Fullstack', avatar: '👨‍💻' },
-    { name: 'Henrique S.', email: 'henrique@twotype.com', role: 'UI/UX & Marketing', avatar: '🎨' },
-    { name: 'Davi B.', email: 'davi@twotype.com', role: 'Fullstack & Automação', avatar: '⚙️' },
+    { name: 'Marcos Rodrigues', email: 'marcos@twotype.com',    role: 'Engenharia & Arquitetura', avatar: '👨‍💻' },
+    { name: 'Filipe Andrade',   email: 'filipe@twotype.com',    role: 'Fullstack & UI/UX',        avatar: '🧑‍💻' },
+    { name: 'Henrique Sampaio', email: 'henrique@twotype.com',  role: 'UI/UX & Marketing',        avatar: '🎨' },
+    { name: 'Davi Borges',      email: 'davi@twotype.com',      role: 'Fullstack & Automação',    avatar: '⚙️' },
+    { name: 'Gustavo',           email: 'gustavo@twotype.com',   role: 'Arquitetura de Software',  avatar: '🏗️' },
+    { name: 'Colaborador',      email: 'colaborador@twotype.com',role: 'Desenvolvedor Fullstack',  avatar: '👨‍💻' },
 ];
 
 let currentAdminColabChatEmail = null;
