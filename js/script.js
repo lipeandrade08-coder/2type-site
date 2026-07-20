@@ -126,12 +126,12 @@ function showSection(id) {
         s.style.opacity = ''; // Clear any inline opacity
     });
 
-    setTimeout(() => {
-        const target = document.getElementById(id);
-        if (target) {
-            target.classList.add('active');
+    const target = document.getElementById(id);
+    if (target) {
+        target.classList.add('active');
 
-            // Allow display change to take effect before animating opacity
+        // Allow display change to take effect before animating opacity
+        requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 target.style.opacity = '1';
                 // Retrigger intersection observer or manual skip for animations on new section
@@ -149,7 +149,11 @@ function showSection(id) {
                         assistantFab.innerHTML = '<i data-lucide="sparkles"></i>';
                         assistantFab.title = 'Assistente de Suporte';
                     }
-                    if (typeof lucide !== 'undefined') lucide.createIcons({ portal: assistantFab });
+                    if (typeof lucide !== 'undefined') {
+                        // Create only the specific icon instead of scanning whole document
+                        const newIcon = assistantFab.querySelector('[data-lucide]');
+                        if (newIcon) lucide.createIcons({ root: assistantFab });
+                    }
                 }
 
                 // Refresh dashboards if entering a portal
@@ -157,10 +161,10 @@ function showSection(id) {
                     updateDashboards();
                 }
             });
-        }
+        });
+    }
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 50);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Request Form Options
@@ -1585,16 +1589,19 @@ function initAnimations() {
 // Trigger initial animations for active section manually if needed
 // Also handles icon animations — merged to avoid monkey-patch pattern
 function triggerAnimations(context) {
-    context.querySelectorAll('.animate-hidden').forEach(el => {
-        el.classList.remove('animate-show');
-        void el.offsetWidth; // force reflow
-        el.classList.add('animate-show');
-    });
-    context.querySelectorAll('.feature-icon, .service-icon, [data-lucide]').forEach(icon => {
-        icon.classList.remove('animate');
-        void icon.offsetWidth;
-        icon.classList.add('animate');
-    });
+    const hiddenEls = Array.from(context.querySelectorAll('.animate-hidden'));
+    const iconEls = Array.from(context.querySelectorAll('.feature-icon, .service-icon, [data-lucide]'));
+
+    // Batch Write 1: Remove classes
+    hiddenEls.forEach(el => el.classList.remove('animate-show'));
+    iconEls.forEach(icon => icon.classList.remove('animate'));
+
+    // Batch Read: Force a single reflow for all changes
+    void document.body.offsetWidth; 
+
+    // Batch Write 2: Add classes back
+    hiddenEls.forEach(el => el.classList.add('animate-show'));
+    iconEls.forEach(icon => icon.classList.add('animate'));
 }
 
 // Mobile Menu Toggle

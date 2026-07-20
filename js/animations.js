@@ -15,9 +15,21 @@
     const bar = document.createElement('div');
     bar.id = 'scroll-progress';
     document.body.prepend(bar);
+    
+    let total = document.documentElement.scrollHeight - window.innerHeight;
+    window.addEventListener('resize', () => {
+      total = document.documentElement.scrollHeight - window.innerHeight;
+    }, { passive: true });
+
+    let ticking = false;
     window.addEventListener('scroll', () => {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      bar.style.transform = `scaleX(${total > 0 ? Math.min(window.scrollY / total, 1) : 0})`;
+      if (!ticking) {
+        raf(() => {
+          bar.style.transform = `scaleX(${total > 0 ? Math.min(window.scrollY / total, 1) : 0})`;
+          ticking = false;
+        });
+        ticking = true;
+      }
     }, { passive: true });
   }
 
@@ -261,14 +273,20 @@
   function initCardTilt() {
     if (isMobile()) return;
     function applyTilt(card) {
-      let tx = 0, ty = 0, cx = 0, cy = 0, rid = null;
+      let tx = 0, ty = 0, cx = 0, cy = 0, rid = null, ticking = false;
       card.addEventListener('mousemove', e => {
-        const r = card.getBoundingClientRect();
-        tx = ((e.clientY - r.top) / r.height - 0.5) * -9;
-        ty = ((e.clientX - r.left) / r.width - 0.5) * 9;
-        card.style.setProperty('--mouse-x', ((e.clientX - r.left) / r.width * 100) + '%');
-        card.style.setProperty('--mouse-y', ((e.clientY - r.top) / r.height * 100) + '%');
-        if (!rid) anim();
+        if (!ticking) {
+          raf(() => {
+            const r = card.getBoundingClientRect();
+            tx = ((e.clientY - r.top) / r.height - 0.5) * -9;
+            ty = ((e.clientX - r.left) / r.width - 0.5) * 9;
+            card.style.setProperty('--mouse-x', ((e.clientX - r.left) / r.width * 100) + '%');
+            card.style.setProperty('--mouse-y', ((e.clientY - r.top) / r.height * 100) + '%');
+            if (!rid) anim();
+            ticking = false;
+          });
+          ticking = true;
+        }
       });
       card.addEventListener('mouseleave', () => { tx = 0; ty = 0; });
       function anim() {
@@ -313,9 +331,16 @@
     if (isMobile()) return;
     document.querySelectorAll('.btn-hero,.btn-primary').forEach(btn => {
       btn.classList.add('btn-magnetic');
+      let ticking = false;
       btn.addEventListener('mousemove', e => {
-        const r = btn.getBoundingClientRect();
-        btn.style.transform = `translate(${(e.clientX-(r.left+r.width/2))*0.2}px,${(e.clientY-(r.top+r.height/2))*0.2}px)`;
+        if (!ticking) {
+          raf(() => {
+            const r = btn.getBoundingClientRect();
+            btn.style.transform = `translate(${(e.clientX-(r.left+r.width/2))*0.2}px,${(e.clientY-(r.top+r.height/2))*0.2}px)`;
+            ticking = false;
+          });
+          ticking = true;
+        }
       });
       btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
     });
@@ -354,11 +379,17 @@
       ctx.clearRect(0,0,W,H);
       for (let i=0;i<particles.length;i++) {
         particles[i].tick(); particles[i].draw();
-        if (MAX_D>0) for (let j=i+1;j<particles.length;j++) {
-          const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y, d2=dx*dx+dy*dy;
-          if (d2<MAX_D*MAX_D) {
-            ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y);
-            ctx.strokeStyle=`rgba(139,92,246,${(1-d2/(MAX_D*MAX_D))*0.09})`; ctx.lineWidth=.4; ctx.stroke();
+        if (MAX_D>0) {
+          for (let j=i+1;j<particles.length;j++) {
+            const dx = Math.abs(particles[i].x - particles[j].x);
+            if (dx > MAX_D) continue;
+            const dy = Math.abs(particles[i].y - particles[j].y);
+            if (dy > MAX_D) continue;
+            const d2 = dx*dx + dy*dy;
+            if (d2 < MAX_D*MAX_D) {
+              ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y);
+              ctx.strokeStyle=`rgba(139,92,246,${(1-d2/(MAX_D*MAX_D))*0.09})`; ctx.lineWidth=.4; ctx.stroke();
+            }
           }
         }
       }
@@ -404,11 +435,18 @@
 
     const macosWin = home.querySelector('.macos-window');
 
+    const orb = home.querySelector('.hero-orb');
+    const floatIcons = home.querySelectorAll('.hero-float-icon');
+
     function tickMacOS() {
-      winRY += (targetRY - winRY) * 0.08;
-      winRX += (targetRX - winRX) * 0.08;
-      if (macosWin) {
-        macosWin.style.transform = `rotateY(${winRY.toFixed(2)}deg) rotateX(${winRX.toFixed(2)}deg)`;
+      const diffRY = targetRY - winRY;
+      const diffRX = targetRX - winRX;
+      if (Math.abs(diffRY) > 0.01 || Math.abs(diffRX) > 0.01) {
+        winRY += diffRY * 0.08;
+        winRX += diffRX * 0.08;
+        if (macosWin) {
+          macosWin.style.transform = `rotateY(${winRY.toFixed(2)}deg) rotateX(${winRX.toFixed(2)}deg)`;
+        }
       }
       animFrame = raf(tickMacOS);
     }
@@ -423,9 +461,8 @@
       if (!pending) {
         pending = true;
         raf(() => {
-          const orb = home.querySelector('.hero-orb');
-          if (orb) orb.style.transform = `translateX(calc(-50% + ${mx * 26}px)) translateY(${my * 16}px)`;
-          home.querySelectorAll('.hero-float-icon').forEach((el, i) => {
+          if (orb) orb.style.translate = `${mx * 26}px ${my * 16}px`;
+          floatIcons.forEach((el, i) => {
             const d = 0.25 + (i % 3) * 0.15;
             el.style.translate = `${mx * 18 * d}px ${my * 14 * d}px`;
           });
